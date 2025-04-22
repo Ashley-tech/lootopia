@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>LOOTOPIA - Signup</title>
+  {{ style('style') }}
+</head>
+<body>
+    <div>
+        <img src="/lootopia.webp" width="170" height="170" alt="LOOTOPIA" />
+        <h2>Signup : </h2>
+        <table>
+            <tbody>
+                <tr><th>Login* :</th><td><input type="text" placeholder="Login" id="logini" /></td></tr>
+                <tr><th>Login (to reconfirm)* :</th><td><input type="text" placeholder="Login" id="loginf" /></td></tr>
+                <tr><th>Password* :</th><td><input type="password" placeholder="Password" id="pwdi"/><button onclick="showPwd('pwdi')">Display password</button></td></tr>
+                <tr><th>Password (to reconfirm)* :</th><td><input type="password" placeholder="Password" id="pwdf"/><button onclick="showPwd('pwdf')">Display password</button></td></tr>
+                <tr><td><button>Signup</button></td><td><button onclick="location.href = '/login'">Return</button></td></tr>
+            </tbody>
+        </table>
+    </div>
+    <script>
+        function showPwd(id) {
+            const mdp = document.getElementById(id);
+            mdp.type = mdp.type == "password" ? "text" : "password";
+        }
+    </script>
+</body>
+</html>

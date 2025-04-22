@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>LOOTOPIA - Login</title>
+  {{ style('style') }}
+</head>
+<body>
+    <div>
+        <img src="/lootopia.webp" width="170" height="170" alt="LOOTOPIA" />
+        <h2>Login : </h2>
+        <table>
+            <tbody>
+                <tr><th>Login :</th><td><input type="text" placeholder="Login" id="login" /></tr>
+                <tr><th>Password :</th><td><input type="password" placeholder="Password" id="pwd"/><button onclick="showPwd()">Display password</button></td></tr>
+                <tr><td><button>Login</button></td><td><button onclick="location.href = '/signup'">Sign up</button></td></tr>
+            </tbody>
+        </table>
+    </div>
+    <script>
+        function showPwd() {
+            const mdp = document.getElementById("pwd");
+            mdp.type = mdp.type == "password" ? "text" : "password";
+        }
+    </script>
+</body>
+</html>
