@@ -1,13 +1,16 @@
+// start/hooks.js
 const mongoose = require('mongoose')
-const Config = use('Config')
+require('dotenv').config() // Charge les variables .env
 
-mongoose.connect(Config.get('mongodb.connection'), {
+const mongoUri = process.env.MONGO_URI || 'mongodb://localhost:27017/lootopia'
+
+mongoose.connect(mongoUri, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 })
 
 mongoose.connection.on('connected', () => {
-  console.log('✅ MongoDB connecté avec succès !')
+  console.log('✅ MongoDB connecté à :', mongoUri)
 })
 
 mongoose.connection.on('error', (err) => {
