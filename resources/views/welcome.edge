@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>LOOTOPIA</title>
+  <title>LOOTOPIA - Welcome</title>
   {{ style('style') }}
 </head>
 <body>
@@ -15,10 +15,10 @@
     </div>
     <div class="nav-right">
       @if(username)
-          <img src="/account.webp" alt="Profil" width="30" height="30" />
+          <img src="/account.webp" class="pointer" alt="Profil" width="30" height="30" />
           <span>{{ cookie('username') }}</span>
       @else
-          <img src="/account.webp" alt="Profil" width="30" height="30" />
+          <img src="/account.webp" class="pointer" onclick="location.href = '/login'" alt="Profil" width="30" height="30" />
           <span>Se connecter</span>
       @endif
   </div>
@@ -31,5 +31,12 @@
   @if(!username)
     <button class="bigbutton" onclick="location.href = '/login'">Log in</button>
   @endif
+  <footer>
+    <div class="nav-right">
+      <ul class="nav-list">
+        <li>© 2025 Ashley RAKOTOARISOA<br />Projet réalisé dans le cadre de Sup de Vinci</li>
+      </ul>
+  </div>
+</footer>
 </body>
 </html>
