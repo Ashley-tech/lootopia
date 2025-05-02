@@ -10,17 +10,18 @@ body {
     font-size: 30px;
   }
   
-  nav{
-    background-color: blueviolet;
-    position: fixed;       /* Pour le coller en haut */
+  nav {
+    position: fixed;
     top: 0;
     left: 0;
     right: 0;
     height: 80px;
-    display: flex;         /* Centrer les <ul> verticalement */
+    background-color: blueviolet;
+    display: flex;
     align-items: center;
-    padding: 0 2rem;       /* Espacement gauche/droite */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Petit effet d'ombre */
+    justify-content: space-between;
+    padding: 0 2rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     z-index: 1000;
   }
 
@@ -43,4 +44,19 @@ body {
   
   h1{
     font-size: 44px;
+  }
+
+  .nav-list {
+    list-style: none;
+    display: flex;
+    gap: 2rem;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
   }

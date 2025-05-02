@@ -7,11 +7,22 @@
 </head>
 <body>
     <nav>
-        <ul class="nav-list">
-          <li>Joueur</li>
-          <li>Organisateur</li>
-        </ul>
-      </nav>
+        <div class="nav-left">
+          <ul class="nav-list">
+            <li>Joueur</li>
+            <li>Organisateur</li>
+          </ul>
+        </div>
+        <div class="nav-right">
+          @if(username)
+              <img src="/account.webp" alt="Profil" width="30" height="30" />
+              <span>{{ cookie('username') }}</span>
+          @else
+              <img src="/account.webp" alt="Profil" width="30" height="30" />
+              <span>Se connecter</span>
+          @endif
+      </div>
+    </nav>
     <div>
         <img src="/lootopia.webp" width="170" height="170" alt="LOOTOPIA" />
     </div>
