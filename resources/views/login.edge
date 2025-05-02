@@ -6,14 +6,21 @@
   {{ style('style') }}
 </head>
 <body>
+    <nav>
+        <ul class="nav-list">
+          <li>Joueur</li>
+          <li>Organisateur</li>
+        </ul>
+      </nav>
     <div>
         <img src="/lootopia.webp" width="170" height="170" alt="LOOTOPIA" />
-        <h2>Login : </h2>
+        <h1>Login : </h1>
         <table>
             <tbody>
-                <tr><th>Login :</th><td><input type="text" placeholder="Login" id="login" /></tr>
+                <tr><th>Email :</th><td><input type="text" placeholder="Email" id="mel" /></tr>
                 <tr><th>Password :</th><td><input type="password" placeholder="Password" id="pwd"/><button onclick="showPwd()">Display password</button></td></tr>
-                <tr><td><button>Login</button></td><td><button onclick="location.href = '/signup'">Sign up</button></td></tr>
+                <tr><td><button class="bigbutton">Login</button></td><td><button class="bigbutton" onclick="location.href = '/signup'">Sign up</button></td></tr>
+                <tr><td colSpan="2"><button style="width:51rem;" class="bigbutton">Return to home</button></td></tr>
             </tbody>
         </table>
     </div>

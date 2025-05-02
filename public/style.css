@@ -2,8 +2,45 @@ body {
     font-family: 'Nunito', sans-serif;
     color: white;
     background-color: #222222;
+    padding-top: 80px;
+  }
+
+  table tbody tr th, table tbody tr td{
+    text-align: left;
+    font-size: 30px;
   }
   
   nav{
     background-color: blueviolet;
+    position: fixed;       /* Pour le coller en haut */
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 80px;
+    display: flex;         /* Centrer les <ul> verticalement */
+    align-items: center;
+    padding: 0 2rem;       /* Espacement gauche/droite */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Petit effet d'ombre */
+    z-index: 1000;
+  }
+
+  .bigbutton{
+    padding: 15px;
+    background-color: blueviolet;
+    color: white;
+    font-family: 'Nunito', sans-serif;
+    font-size: 40px;
+    width:25rem;
+  }
+
+  .nav-list {
+    list-style: none;        /* Enlève les points */
+    display: flex;           /* Met les <li> en ligne */
+    gap: 1rem;               /* Espacement entre les éléments */
+    padding: 0;
+    margin: 0;
+  }
+  
+  h1{
+    font-size: 44px;
   }

@@ -6,16 +6,24 @@
   {{ style('style') }}
 </head>
 <body>
+    <nav>
+        <ul class="nav-list">
+          <li>Joueur</li>
+          <li>Organisateur</li>
+        </ul>
+      </nav>
     <div>
         <img src="/lootopia.webp" width="170" height="170" alt="LOOTOPIA" />
-        <h2>Signup : </h2>
+        <h1>Signup : </h1>
         <table>
             <tbody>
                 <tr><th>Login* :</th><td><input type="text" placeholder="Login" id="logini" /></td></tr>
                 <tr><th>Login (to reconfirm)* :</th><td><input type="text" placeholder="Login" id="loginf" /></td></tr>
+                <tr><th>Email* :</th><td><input type="text" placeholder="Email" id="meli" /></td></tr>
+                <tr><th>Email (to reconfirm)* :</th><td><input type="text" placeholder="Email (to reconfirm)" id="melf" /></td></tr>
                 <tr><th>Password* :</th><td><input type="password" placeholder="Password" id="pwdi"/><button onclick="showPwd('pwdi')">Display password</button></td></tr>
                 <tr><th>Password (to reconfirm)* :</th><td><input type="password" placeholder="Password" id="pwdf"/><button onclick="showPwd('pwdf')">Display password</button></td></tr>
-                <tr><td><button>Signup</button></td><td><button onclick="location.href = '/login'">Return</button></td></tr>
+                <tr><td><button class="bigbutton">Signup</button></td><td><button class="bigbutton" onclick="location.href = '/login'">Return</button></td></tr>
             </tbody>
         </table>
     </div>
@@ -23,6 +31,10 @@
         function showPwd(id) {
             const mdp = document.getElementById(id);
             mdp.type = mdp.type == "password" ? "text" : "password";
+        }
+
+        function verif(){
+            const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d]).{8,}$/;
         }
     </script>
 </body>
