@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>LOOTOPIA - Joueur</title>
+  {{ style('style') }}
+</head>
+<body>
+    <nav>
+        <div class="nav-left">
+          <ul class="nav-list">
+            <li>Joueur</li>
+            <li>Organisateur</li>
+          </ul>
+        </div>
+        <div class="nav-right">
+          @if(username)
+              <img src="/account.webp" class="pointer" alt="Profil" width="30" height="30" />
+              <span>{{ cookie('username') }}</span>
+          @else
+              <img src="/account.webp" class="pointer" onclick="location.href = '/login'" alt="Profil" width="30" height="30" />
+              <span>Se connecter</span>
+          @endif
+      </div>
+    </nav>
+</body>
+</html>
