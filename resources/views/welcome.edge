@@ -23,14 +23,16 @@
       @endif
   </div>
   </nav>
-  <img src="/lootopia.webp" width="170" height="170" alt="LOOTOPIA" /><br />
-  This platform is dedicated to the participation and organization of treasure hunts. It will be based on the use of virtual and semi-virtual caches, enhanced by Augmented Reality (AR) technologies accessible via smartphones and tablets.<br/>
-  The treasure hunt will be designed as a multifunctional tool: a fun medium for participants, but also a powerful communication and marketing vehicle for organizers wishing to promote their initiatives or brand.<br />
-  <button class="bigbutton">Game modes</button><br />
-  <button class="bigbutton">Available flushes</button> <br />
-  @if(!username)
-    <button class="bigbutton" onclick="location.href = '/login'">Log in</button>
-  @endif
+  <div class="scroll_y_auto">
+    <img src="/lootopia.webp" width="170" height="170" alt="LOOTOPIA" /><br />
+    This platform is dedicated to the participation and organization of treasure hunts. It will be based on the use of virtual and semi-virtual caches, enhanced by Augmented Reality (AR) technologies accessible via smartphones and tablets.<br/>
+    The treasure hunt will be designed as a multifunctional tool: a fun medium for participants, but also a powerful communication and marketing vehicle for organizers wishing to promote their initiatives or brand.<br />
+    <button class="bigbutton">Game modes</button><br />
+    <button class="bigbutton">Available flushes</button> <br />
+    @if(!username)
+      <button class="bigbutton" onclick="location.href = '/login'">Log in</button>
+    @endif
+</div>
   <footer>
     <div class="nav-right">
       <ul class="nav-list">
