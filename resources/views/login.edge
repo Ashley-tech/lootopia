@@ -14,18 +14,19 @@
           </ul>
         </div>
       </nav>
-    <div>
+      <section class="scroll_y_auto">
         <img src="/lootopia.webp" width="170" height="170" alt="LOOTOPIA" />
         <h1>Login : </h1>
         <table>
             <tbody>
                 <tr><th>Email :</th><td><input type="text" placeholder="Email" id="mel" /></tr>
                 <tr><th>Password :</th><td><input type="password" placeholder="Password" id="pwd"/><button onclick="showPwd()">Display password</button></td></tr>
-                <tr><td><button class="bigbutton">Login</button></td><td><button class="bigbutton" onclick="location.href = '/signup'">Sign up</button></td></tr>
+                <tr><td colspan="2" class="no_display" id="incorrect">Les identifiants ne correspondent pas</td></tr>
+                <tr><td><button class="bigbutton" id="loginBtn">Login</button></td><td><button class="bigbutton" onclick="location.href = '/signup'">Sign up</button></td></tr>
                 <tr><td colSpan="2"><button style="width:51rem;" class="bigbutton" onclick="location.href = '/home'">Return to home</button></td></tr>
             </tbody>
         </table>
-    </div>
+  </section>
     <footer>
       <div class="nav-right">
         <ul class="nav-list">
@@ -38,6 +39,37 @@
             const mdp = document.getElementById("pwd");
             mdp.type = mdp.type == "password" ? "text" : "password";
         }
+
+          document.getElementById("loginBtn").addEventListener("click", async (e) => {
+            e.preventDefault(); // évite le rechargement de la page
+
+            const login = document.getElementById("mel").value;
+            const password = document.getElementById("pwd").value;
+
+            try {
+              const response = await fetch("http://127.0.0.1:3334/login", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ login, password })
+              });
+
+              const result = await response.json();
+
+              if (result.success) {
+                // redirige par exemple
+                location.href = "/home";
+              } else {
+                document.getElementById("incorrect").style.display = "table-cell";
+                document.getElementById("incorrect").textContent = "Les identifiants ne correspondent pas.";
+              }
+            } catch (error) {
+              console.error("Erreur de connexion :", error);
+              document.getElementById("incorrect").style.display = "table-cell";
+              document.getElementById("incorrect").textContent = "Erreur réseau.";
+            }
+          });
     </script>
 </body>
 </html>
