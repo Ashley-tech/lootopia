@@ -2,12 +2,22 @@ const express = require('express');
 const {MongoClient, ObjectId} = require("mongodb");
 const cors =require("cors");
 const dotenv=require("dotenv");
+const { Pool } = require('pg');
+
+const pool = new Pool({
+  user: 'postgres',
+  host: '127.0.0.1',
+  database: 'lootopia',
+  password: 'root',
+  port: 5432,
+});
 
 dotenv.config();
 
 const app = express();
 const port = 3334;
 const mongoUri = "mongodb://127.0.0.1:27017";
+const bcrypt = require('bcrypt');
 
 app.use(express.json());
 app.use(cors());
@@ -25,11 +35,11 @@ async function connecter() {
 
 connecter();
 
-app.get("/data/:database/:collection",
+app.get("/data/mongodb/:collection",
     async (req,res) => {
-        const {database,collection} = req.params;
+        const {collection} = req.params;
         try{
-            const db = client.db(database);
+            const db = client.db(process.env.BDD);
             const coll = db.collection(collection);
             const data = await coll.find().toArray();
             res.json(data);
@@ -40,12 +50,12 @@ app.get("/data/:database/:collection",
 );
 
 // Ajouter un document dans une collection
-app.post("/data/:database/:collection", async (req, res) => {
-    const { database, collection } = req.params;
+app.post("/data/mongodb/:collection", async (req, res) => {
+    const { collection } = req.params;
     const newDocument = req.body; // Le document à insérer
 
     try {
-        const db = client.db(database);
+        const db = client.db(process.env.BDD);
         const coll = db.collection(collection);
         const result = await coll.insertOne(newDocument);
         res.status(201).json({ succes: true, message: "Document ajouté", insertedId: result.insertedId });
@@ -55,13 +65,13 @@ app.post("/data/:database/:collection", async (req, res) => {
 });
 
 // Modifier un document
-app.put("/data/:database/:collection", async (req, res) => {
-    const { database, collection } = req.params;
+app.put("/data/mongodb/:collection", async (req, res) => {
+    const { collection } = req.params;
     const { whil, updatedDocument} = req.body; // Le document à insérer
 
     console.log("modif")
     try {
-        const db = client.db(database);
+        const db = client.db(process.env.BDD);
         const coll = db.collection(collection);
         const result = await coll.updateOne(
             whil, 
@@ -80,8 +90,8 @@ app.put("/data/:database/:collection", async (req, res) => {
 });
 
 // Supprimer un champ (attribut) d’un document par son ID
-app.patch("/data/:database/:collection/remove-field", async (req, res) => {
-    const { database, collection} = req.params;
+app.patch("/data/mongodb/:collection/remove-field", async (req, res) => {
+    const { collection} = req.params;
     const { where, field } = req.body; // champ à supprimer
 
     if (!where || !field) {
@@ -89,7 +99,7 @@ app.patch("/data/:database/:collection/remove-field", async (req, res) => {
     }
 
     try {
-        const db = client.db(database);
+        const db = client.db(process.env.BDD);
         const coll = db.collection(collection);
         const result = await coll.updateOne(
             where,
@@ -106,15 +116,62 @@ app.patch("/data/:database/:collection/remove-field", async (req, res) => {
     }
 });
 
+app.post("/signup",async (req,res) => {
+    const { nickname,login,password,tel } = req.body;
+
+    try {
+        const saltRounds = 10;
+        const hash = await bcrypt.hash(password, saltRounds);
+
+        const result = await pool.query(
+            'INSERT INTO compte (nickname,login,password,password_crypted,tel,is_partner) VALUES ($1, $2,$3,$4,$5,$6) RETURNING *',
+            [nickname,login,password,hash,tel,false]
+        );
+        res.status(201).json(result.rows[0]);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Erreur lors de l\'insertion');
+    }
+})
+
+app.post('/login', async (req, res) => {
+  const { login, password } = req.body;
+
+  try {
+    // Récupérer l'utilisateur par email
+    const result = await pool.query(
+      'SELECT * FROM compte WHERE login = $1',
+      [login]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(401).send({success: false,message :'Email non trouvé'});
+    }
+
+    const utilisateur = result.rows[0];
+
+    // Comparer les mots de passe
+    const estValide = await bcrypt.compare(password, utilisateur.password_crypted);
+
+    if (!estValide) {
+      return res.status(401).send({success: false,message :'Mot de passe incorrect'});
+    }
+
+    // Connexion réussie
+    return res.status(200).send({success: true,message:"Connexon réussie"});
+  } catch (err) {
+    return res.status(500).send({success: false,message :err})
+  }
+});
 
 // Modifier un document par son ID
-app.put("/data/:database/:collection/:id", async (req, res) => {
-    const { database, collection, id } = req.params;
+app.put("/data/mongodb/:collection/:id", async (req, res) => {
+    const { collection, id } = req.params;
     const updatedDocument = req.body; // Données mises à jour
     console.log("supp",updatedDocument+" "+id)
 
     try {
-        const db = client.db(database);
+        const db = client.db(process.env.BDD);
         const coll = db.collection(collection);
         const result = await coll.updateOne(
             { ID: id }, 
@@ -132,8 +189,20 @@ app.put("/data/:database/:collection/:id", async (req, res) => {
     }
 });
 
+app.get('/data/postgresql/:table', async (req, res) => {
+    const { table } = req.params;
+  try {
+    const result = await pool.query('SELECT * FROM '+table);
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Erreur lors de la récupération des données');
+  }
+});
+
+
 // Supprimer un document par son ID
-app.delete("/data/:database/:collection/:id", async (req, res) => {
+app.delete("/data/mongodb/:database/:collection/:id", async (req, res) => {
     const { database, collection, id } = req.params;
 
     try {
