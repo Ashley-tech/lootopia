@@ -1,3 +1,20 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+}
+
+.rouge{
+  color: red;
+}
+
+.no_display {
+  display: none
+}
 body {
     font-family: 'Nunito', sans-serif;
     color: white;
@@ -78,4 +95,16 @@ body {
     align-items: center;
     gap: 0.5rem;
     font-size: 0.9rem;
+  }
+
+.scroll_y_auto {
+  height: calc(100vh - 160px); /* Hauteur totale - nav - footer */
+  overflow-y: auto;
+  padding: 2rem;
+  box-sizing: border-box;
+}
+
+
+  .scroll_auto{
+    overflow: scroll;
   }
