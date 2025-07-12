@@ -6,5 +6,37 @@
   {{ style('style') }}
 </head>
 <body>
+    <nav>
+        <div class="nav-left">
+          <ul class="nav-list">
+            <li>Joueur</li>
+            <li>Organisateur</li>
+          </ul>
+        </div>
+      </nav>
+    <section class="scroll_y_auto">
+        <img src="/lootopia.webp" width="170" height="170" alt="LOOTOPIA" />
+        <h1>Signup : </h1>
+        <table>
+            <tbody>
+                <tr><td colspan="2">Mail envoyé. L'as-tu bien reçu ?</td></tr>
+                <tr><td><button class="bigbutton" id="renvoi">Non, renvoie moi ce mail</button></td><td><button onclick="location.href = '/home'">J'ai bien reçu le mail de confirmation</button></td></tr>
+            </tbody>
+        </table>
+  </section>
+    <footer>
+      <div class="nav-right">
+        <ul class="nav-list">
+          <li>© 2025 Ashley RAKOTOARISOA<br />Projet réalisé dans le cadre de Sup de Vinci</li>
+        </ul>
+    </div>
+  </footer>
+    <script>
+      import Cookie from "js-cookie";
+       document.getElementById("renvoi").addEventListener("click", async (e) => {
+            e.preventDefault();
+
+        })
+    </script>
 </body>
 </html>
