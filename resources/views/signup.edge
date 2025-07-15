@@ -6,60 +6,90 @@
   {{ style('style') }}
 </head>
 <body>
-    <nav>
-        <div class="nav-left">
-          <ul class="nav-list">
-            <li>Joueur</li>
-            <li>Organisateur</li>
-          </ul>
-        </div>
-      </nav>
-    <section class="scroll_y_auto">
-        <img src="/lootopia.webp" width="170" height="170" alt="LOOTOPIA" />
-        <h1>Signup : </h1>
-        <table>
-            <tbody>
-                <tr><th>Login* :</th><td><input type="text" placeholder="Login" id="logini" /></td></tr>
-                <tr><th>Login (to reconfirm)* :</th><td><input type="text" placeholder="Login" id="loginf" /></td></tr>
-                <tr><th>Email* :</th><td><input type="text" placeholder="Email" id="meli" /></td></tr>
-                <tr><th>Email (to reconfirm)* :</th><td><input type="text" placeholder="Email (to reconfirm)" id="melf" /></td></tr>
-                <tr><th>Password* :</th><td><input type="password" placeholder="Password" id="pwdi"/><button onclick="showPwd('pwdi')">Display password</button></td></tr>
-                <tr><th>Password (to reconfirm)* :</th><td><input type="password" placeholder="Password" id="pwdf"/><button onclick="showPwd('pwdf')">Display password</button></td></tr>
-                <tr><th>Telephone Number :</th><td><input type="text" placeholder="Telephone Number" id="telt" /></td></tr>
-                <tr><td colspan="2" class="no_display rouge" id="empty">Tous les champs sont obligatoires</td></tr>
-                <tr><td colspan="2" class="no_display rouge" id="diffl">Les logins sont différents</td></tr>
-                <tr><td colspan="2" class="no_display rouge" id="diffe">Les emails sont différents</td></tr>
-                <tr><td colspan="2" class="no_display rouge" id="incorrecte">L'email ne respecte pas la norme classique</td></tr>
-                <tr><td colspan="2" class="no_display rouge" id="diffp">Les mots de passes sont différents</td></tr>
-                <tr><td colspan="2" class="no_display rouge" id="incorrectp">Une erreur s'est produite.</td></tr>
-                <tr><td colspan="2" class="no_display rouge" id="incorrectp">Le mot de passe doit comporter 8 caractères</td></tr>
-                <tr><td><button class="bigbutton" id="sign">Signup</button></td><td><button class="bigbutton" onclick="location.href = '/login'">Return</button></td></tr>
-            </tbody>
-        </table>
+  <nav>
+    <div class="nav-left">
+      <ul class="nav-list">
+        <li>Joueur</li>
+        <li>Organisateur</li>
+        <li>Récompenses disponibles</li>
+      </ul>
+    </div>
+  </nav>
+
+  <section class="scroll_y_auto">
+    <img src="/lootopia.webp" width="170" height="170" alt="LOOTOPIA" />
+    <h1>Signup :</h1>
+    <table>
+      <tbody>
+        <tr><th>Login* :</th><td><input type="text" placeholder="Login" id="logini" /></td></tr>
+        <tr><th>Login (to reconfirm)* :</th><td><input type="text" placeholder="Login" id="loginf" /></td></tr>
+        <tr><th>Email* :</th><td><input type="text" placeholder="Email" id="meli" /></td></tr>
+        <tr><th>Email (to reconfirm)* :</th><td><input type="text" placeholder="Email (to reconfirm)" id="melf" /></td></tr>
+        <tr>
+          <th>Password* :</th>
+          <td><input type="password" placeholder="Password" id="pwdi" />
+            <button onclick="showPwd('pwdi')">Display password</button>
+          </td>
+        </tr>
+        <tr>
+          <th>Password (to reconfirm)* :</th>
+          <td><input type="password" placeholder="Password" id="pwdf" />
+            <button onclick="showPwd('pwdf')">Display password</button>
+          </td>
+        </tr>
+        <tr><th>Telephone Number :</th><td><input type="text" placeholder="Telephone Number" id="telt" /></td></tr>
+
+        <!-- Error messages -->
+        <tr><td colspan="2" class="no_display rouge" id="empty">Tous les champs sont obligatoires</td></tr>
+        <tr><td colspan="2" class="no_display rouge" id="diffl">Les logins sont différents</td></tr>
+        <tr><td colspan="2" class="no_display rouge" id="diffe">Les emails sont différents</td></tr>
+        <tr><td colspan="2" class="no_display rouge" id="incorrecte">L'email ne respecte pas la norme classique</td></tr>
+        <tr><td colspan="2" class="no_display rouge" id="diffp">Les mots de passes sont différents</td></tr>
+        <tr><td colspan="2" class="no_display rouge" id="incorrectp">Le mot de passe ne respecte pas l'expression régulière ci-dessus.</td></tr>
+        <tr><td colspan="2" class="no_display rouge" id="erreur">Une erreur s'est produite.</td></tr>
+
+        <tr>
+          <td><button class="bigbutton" id="sign">Signup</button></td>
+          <td><button class="bigbutton" onclick="location.href = '/login'">Return</button></td>
+        </tr>
+      </tbody>
+    </table>
   </section>
-    <footer>
-      <div class="nav-right">
-        <ul class="nav-list">
-          <li>© 2025 Ashley RAKOTOARISOA<br />Projet réalisé dans le cadre de Sup de Vinci</li>
-        </ul>
+
+  <footer>
+    <div class="nav-right">
+      <ul class="nav-list">
+        <li>© 2025 Ashley RAKOTOARISOA<br />Projet réalisé dans le cadre de Sup de Vinci</li>
+      </ul>
     </div>
   </footer>
     <script>
         function showPwd(id) {
-            const mdp = document.getElementById(id);
-            mdp.type = mdp.type == "password" ? "text" : "password";
-        }
+      const mdp = document.getElementById(id);
+      mdp.type = mdp.type === "password" ? "text" : "password";
+    }
 
-        function checkRE(regex, str){
-          return regex.test(str)
-        }
-
-        function verif(){
-            const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d]).{8,}$/;
-        }
+    function checkRE(regex, str) {
+      return regex.test(str);
+    }
 
        document.getElementById("sign").addEventListener("click", async (e) => {
             e.preventDefault();
+
+      const logini = document.getElementById("logini").value.trim();
+      const loginf = document.getElementById("loginf").value.trim();
+      const emaili = document.getElementById("meli").value.trim();
+      const emailf = document.getElementById("melf").value.trim();
+      const pwdi = document.getElementById("pwdi").value;
+      const pwdf = document.getElementById("pwdf").value;
+      const tel = document.getElementById("telt").value.trim();
+      const regexPwd = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+      const regexEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+      // Reset erreurs
+      ["empty", "diffl", "diffe", "incorrecte", "diffp", "incorrectp", "erreur"].forEach(id => {
+        document.getElementById(id).style.display = "none";
+      });
             document.getElementById("empty").style.display = "none"
             document.getElementById("diffl").style.display = "none"
             document.getElementById("diffe").style.display = "none"
@@ -67,40 +97,65 @@
             document.getElementById("incorrecte").style.display = "none"
             document.getElementById("incorrectp").style.display = "none"
             document.getElementById("erreur").style.display = "none"
+            console.log(document.getElementById("pwdi").value,checkRE(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/,document.getElementById("pwdi").value))
 
-            if (document.getElementById("logini").value == "" || document.getElementById("loginf").value == "" ||document.getElementById("meli").value == "" || document.getElementById("melf").value == "" || document.getElementById("pwdi").value == "" || document.getElementById("pwdf").value == ""){
+            
+
+                const regex = new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*()\\-_=+\\[\\]{};':"\\\\|,.<>/?]).{8,}$/);
+
+
+            if (!logini || !loginf || !emaili || !emailf || !pwdi || !pwdf){
               document.getElementById("empty").style.display = "table-cell"
-            } else if (document.getElementById("logini").value != document.getElementById("loginf").value ){
-              document.getElementById("diffl").style.display = "table-cell"
-            } else if (document.getElementById("meli").value != document.getElementById("melf").value) {
-              document.getElementById("diffe").style.display = "table-cell"
-            } else if (!checkRE(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,document.getElementById("meli").value)){
-              document.getElementById("incorrecte").style.display = "table-cell"
-            } else if (document.getElementById("pwdi").value != document.getElementById("pwdf").value){
-              document.getElementById("diffp").style.display = "table-cell"
-            } else {
+            } else if (logini !== loginf) {
+        document.getElementById("diffl").style.display = "table-cell";
+      } else if (emaili !== emailf) {
+        document.getElementById("diffe").style.display = "table-cell";
+      } else if (!checkRE(regexEmail, emaili)) {
+        document.getElementById("incorrecte").style.display = "table-cell";
+      } else if (pwdi !== pwdf) {
+        document.getElementById("diffp").style.display = "table-cell";
+      //} else if (!checkRE(regexPwd, pwdi)) {
+        //document.getElementById("incorrectp").style.display = "table-cell";
+      } else {
               try {
-                const nickname = document.getElementById("loginl").value;
-                const login = document.getElementById("meli").value;
-                const password = document.getElementById("pwdi").value;
-                const tel = document.getElementById("telt").value;
 
                 const response = await fetch("http://127.0.0.1:3334/signup", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ nickname: logini, login: emaili, password: pwdi, tel })
+          });
+
+                const result = await response.json();
+                console.log(result)
+
+                const from = "no-reply@lootopia.com"
+                const to = document.getElementById("meli").value
+                const subject = "Mail de confirmation";
+                let login = document.getElementById("logini").value;
+                let password = document.getElementById("pwdi").value;
+                let texte = "Salut, Nous te confirmons que tu t'es bien inscrit à Lootopia ! Mot de passe : ";
+
+                  for (let i = 0; i < password.length; i++){
+                    texte += "*";
+                  }
+
+                texte += " Passe de bons moments. Lootopia";
+
+                const response2 = await fetch("http://localhost:5174/send-email", {
                   method: "POST",
                   headers: {
                     "Content-Type": "application/json"
                   },
-                  body: JSON.stringify({ nickname,login, password , tel})
+                  body: JSON.stringify({ from,to,subject,text:texte})
                 });
 
-                const result = await response.json();
+                const result2 = await response2.json();
+                console.log(result2)
 
-                if (result.success) {
-                  
+                if (result.success && result2.success) {
                   location.href = "/signup/success";
                 } else {
-                  document.getElementById("incorrect").style.display = "table-cell";
-                  document.getElementById("incorrect").textContent = "Les identifiants ne correspondent pas.";
+                  document.getElementById("erreur").style.display = "table-cell";
                 }
               } catch (e){
                 console.log(e)

@@ -4,6 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "dev": "nodemon server.js",
+    "dev:back": "nodemon back/server.js",
+    "start": "node server.js",
+    "start:back": "node back/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -12,9 +16,14 @@
   "dependencies": {
     "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
+    "dotenv": "^17.2.0",
     "express": "^5.1.0",
+    "mongodb": "^6.17.0",
     "nodemailer": "^7.0.3",
     "pg": "^8.16.3",
     "stripe": "^18.2.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
   }
 }

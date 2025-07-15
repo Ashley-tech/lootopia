@@ -34,7 +34,8 @@
         </ul>
     </div>
   </footer>
-    <script>
+    <script type='module'>
+      import Cookie from 'https://cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.mjs'
         function showPwd() {
             const mdp = document.getElementById("pwd");
             mdp.type = mdp.type == "password" ? "text" : "password";
@@ -59,6 +60,7 @@
 
               if (result.success) {
                 // redirige par exemple
+                Cookie.set("username",document.getElementById("mel").value)
                 location.href = "/home";
               } else {
                 document.getElementById("incorrect").style.display = "table-cell";

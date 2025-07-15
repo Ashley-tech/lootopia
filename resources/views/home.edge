@@ -11,21 +11,17 @@
           <ul class="nav-list">
             <li>Joueur</li>
             <li>Organisateur</li>
+            <li>Récompenses disponibles</li>
           </ul>
         </div>
-        <div class="nav-right">
-          @if(username)
-              <img src="/account.webp" class="pointer" alt="Profil" width="30" height="30" />
-              <span>{{ cookie('username') }}</span>
-          @else
-              <img src="/account.webp" class="pointer" onclick="location.href = '/login'" alt="Profil" width="30" height="30" />
-              <span>Se connecter</span>
-          @endif
+        <div id="user-info" class="nav-right">
+          
       </div>
     </nav>
     <div>
         <img src="/lootopia.webp" width="170" height="170" alt="LOOTOPIA" />
     </div>
+    <div class="no_display" id="confirm_deconnect"></div>
     <footer>
       <div class="nav-right">
         <ul class="nav-list">
@@ -33,7 +29,28 @@
         </ul>
     </div>
   </footer>
-    <script>
+    <script type="module">
+      import Cookie from 'https://cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.mjs'
+      const username = Cookie.get('username')
+      let userInfo = document.getElementById('user-info')
+
+      console.log(username)
+
+      if(username){
+        userInfo.innerHTML = "<img src='/account.webp' class='pointer' alt='Profil' width='30' height='30' /><span>"+username+"</span><button onclick='deconnecter()'>Déconnexion</button>"
+      } else {
+        userInfo.innerHTML = "<img src='/account.webp' class='pointer' onclick='location.href = "+'"/login"'+"' alt='Profil' width='30' height='30'/><span>Se connecter</span>"
+      }
+
+
+      window.deconnecter = function() {
+        var con = confirm("Are you sure ?")
+        if (con){
+          Cookie.remove("username")
+          location.reload()
+        }
+      }
+
     </script>
 </body>
 </html>
