@@ -22,6 +22,17 @@
         <img src="/lootopia.webp" width="170" height="170" alt="LOOTOPIA" />
     </div>
     <div class="no_display" id="confirm_deconnect"></div>
+    <h1>Liste des récompenses disponibles</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Image</th><th>Nom</th><th>Type</th>
+            </tr>
+        </thead>
+        <tbody id="tabr">
+        
+        </tbody>
+    </table>
     <footer>
       <div class="nav-right">
         <ul class="nav-list">
@@ -50,6 +61,32 @@
           location.reload()
         }
       }
+
+        // 👉 FETCH des récompenses
+  const tabr = document.getElementById('tabr')
+
+  async function chargerRecompenses() {
+    try {
+      const response = await fetch('http://127.0.0.1:3334/data/mongodb/recompense')
+      const recompenses = await response.json()
+
+      if (!Array.isArray(recompenses)) throw new Error("Réponse inattendue")
+
+      // Génération dynamique des lignes
+      recompenses.forEach(recomp => {
+        const tr = document.createElement('tr')
+
+        tr.innerHTML = "<td><img src='/recompense/"+recomp.type+"/"+recomp.nom+".webp' alt='"+recomp.nom+"' width='60' height='60'/></td><td>"+recomp.nom+"</td><td>"+recomp.type+"</td>";
+
+        tabr.appendChild(tr)
+      })
+    } catch (err) {
+      console.error("Erreur lors du chargement des récompenses :", err)
+      tabr.innerHTML = "<tr><td colspan='3'>Erreur de chargement des récompenses.</td></tr>"
+    }
+  }
+
+  chargerRecompenses()
 
     </script>
 </body>
