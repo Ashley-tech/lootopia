@@ -1,0 +1,36 @@
+[{
+    "nom":"Pièce d'or",
+    "type":"Monnaie virtuelle",
+    "effectif":50
+},{
+    "nom":"Jeton Loot",
+    "type":"Monnaie virtuelle",
+    "effectif":100
+},{
+    "nom":"Diamant Lootopia","type":"Monnaie virtuelle",
+    "effectif":1
+},{
+    "nom":"Crédit de chasse",
+    "type":"Monnaie virtuelle",
+    "effectif":500
+},{
+    "nom":"Passe Premium",
+    "type":"Monnaie virtuelle",
+    "dureeEnHeures":24
+},{
+    "nom":"Boussole magique",
+    "type":"Artefact",
+    "fonction":"Révélation d'un indice supplémentaire"
+},{
+    "nom":"Lampe de vision nocturne",
+    "type":"Artefact",
+    "fonction":"Augmentation de la visibilité des caches en Réalité Augmentée"
+},{
+    "nom":"Filet à énigmes",
+    "type":"Artefact",
+    "fonction":"Aide pour la résolution rapide d'un énigme"
+},{
+    "nom":"Clé ancienne",
+    "type":"Artefact",
+    "fonction":"Ouverture d'une cache vérouillée"
+}]

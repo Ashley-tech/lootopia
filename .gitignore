@@ -14,6 +14,3 @@ database/*.sqlite
 # VSCode & Webstorm history directories
 .history
 .idea
-
-# Datas JSON MongoDB
-datas/*.json
