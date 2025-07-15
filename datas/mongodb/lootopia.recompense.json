@@ -33,4 +33,9 @@
     "nom":"Clé ancienne",
     "type":"Artefact",
     "fonction":"Ouverture d'une cache vérouillée"
+},{
+    "nom":"Blocage",
+    "type":"Carte",
+    "rarete":"Rare",
+    "utilisation":"Empêche un autre joueur de looter une cache pendant 5 min"
 }]

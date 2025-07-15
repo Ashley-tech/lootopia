@@ -9,30 +9,32 @@
     <nav>
         <div class="nav-left">
           <ul class="nav-list">
-            <li>Joueur</li>
-            <li>Organisateur</li>
-            <li>Récompenses disponibles</li>
+            <li class="pointer" onclick="location.href = '/player'">Joueur</li>
+            <li class="pointer" onclick="location.href = '/organisator'">Organisateur</li>
+            <li class="pointer" onclick="location.href = '/recompenses'">Récompenses disponibles</li>
           </ul>
         </div>
         <div id="user-info" class="nav-right">
           
       </div>
     </nav>
-    <div>
-        <img src="/lootopia.webp" width="170" height="170" alt="LOOTOPIA" />
-    </div>
-    <div class="no_display" id="confirm_deconnect"></div>
-    <h1>Liste des récompenses disponibles</h1>
-    <table>
-        <thead>
-            <tr>
-                <th>Image</th><th>Nom</th><th>Type</th>
-            </tr>
-        </thead>
-        <tbody id="tabr">
-        
-        </tbody>
-    </table>
+    <section class="scroll_y_auto">
+        <div>
+            <img src="/lootopia.webp" width="170" height="170" alt="LOOTOPIA" />
+        </div>
+        <div class="no_display" id="confirm_deconnect"></div>
+        <h1>Liste des récompenses disponibles</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Image</th><th>Nom</th><th>Type</th>
+                </tr>
+            </thead>
+            <tbody id="tabr">
+            
+            </tbody>
+        </table>
+    </section>
     <footer>
       <div class="nav-right">
         <ul class="nav-list">

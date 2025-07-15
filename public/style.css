@@ -22,7 +22,7 @@ body {
     padding-top: 80px;
   }
 
-  table tbody tr th, table tbody tr td{
+  table tbody tr th, table tbody tr td, table thead tr th{
     text-align: left;
     font-size: 30px;
   }
@@ -104,7 +104,9 @@ body {
   box-sizing: border-box;
 }
 
-
+.textdeconone{
+  text-decoration: "none";
+}
   .scroll_auto{
     overflow: scroll;
   }

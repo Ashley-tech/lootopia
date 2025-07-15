@@ -189,11 +189,71 @@ app.put("/data/mongodb/:collection/:id", async (req, res) => {
     }
 });
 
+app.post("/inscription/:participant/:chasse",async (req,res) => {
+    const {participant,chasse} = req.params
+    try {
+
+    } catch (e) {
+        console.error(err);
+        res.status(500).send('Erreur lors de l\'inscription');
+    }
+})
+
+app.post("/chasse",async (req,res) => {
+    const { titre,description,organisateur,monde,fin,nbreparticipantsmax,delai } = req.body;
+
+    try {
+        const result = await pool.query(
+            "INSERT INTO chasse (titre,description,organisateur,monde,datefin,nbreparticipantsmax,montant,delai,statut) VALUES ($1, $2,$3,$4,$5,$6,$7,$8,$9) RETURNING *",
+            [titre,description,organisateur,monde,fin,nbreparticipantsmax,montant,delai,"Actif"]
+        );
+        res.status(201).json(result.rows[0]);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Erreur lors de l\'ajout de la chasse');
+    }
+})
+
 app.get('/data/postgresql/:table', async (req, res) => {
     const { table } = req.params;
   try {
-    const result = await pool.query('SELECT * FROM '+table);
-    res.json(result.rows);
+    let reqSQL;
+    if (table == "chasse") {
+      reqSQL ="SELECT ch.id,titre,description,organisateur,monde,datefin,nbreparticipantsmax,montant,delai,statut FROM chasse ch join compte co on (organisateur = co.id)";
+      const result = await pool.query(reqSQL);
+      const rows = result.rows;
+
+      // On remplace l'ID de l'organisateur par le compte complet
+      const rowsWithOrganisateur = await Promise.all(rows.map(async (row) => {
+        const compteResult = await pool.query('SELECT * FROM compte WHERE id = $1', [row.organisateur]);
+        row.organisateur = compteResult.rows[0]; // Remplace l'ID par l'objet compte
+        return row;
+      }));
+
+      res.json(rowsWithOrganisateur);
+    } else if (table == "participation"){
+        reqSQL = 'SELECT * FROM participation';
+        const result = await pool.query(reqSQL);
+        const rows = result.rows;
+
+        const rowsWithRelations = await Promise.all(rows.map(async (row) => {
+            // Remplacement de joueur
+            const joueurResult = await pool.query('SELECT * FROM compte WHERE id = $1', [row.joueur]);
+            row.joueur = joueurResult.rows[0];
+
+            // Remplacement de chasse
+            const chasseResult = await pool.query('SELECT * FROM chasse WHERE id = $1', [row.chasse]);
+            row.chasse = chasseResult.rows[0];
+
+            return row;
+        }));
+
+        res.json(rowsWithRelations);
+    } else {
+      reqSQL = 'SELECT * FROM ' + table;
+      const result = await pool.query(reqSQL);
+      res.json(result.rows);
+    }
   } catch (err) {
     console.error(err);
     res.status(500).send('Erreur lors de la récupération des données');
