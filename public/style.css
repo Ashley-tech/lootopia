@@ -12,6 +12,10 @@ html, body {
   color: red;
 }
 
+.vert{
+  color: #00ff00;
+}
+
 .no_display {
   display: none
 }
