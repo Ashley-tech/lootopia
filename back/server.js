@@ -203,9 +203,15 @@ app.post("/chasse",async (req,res) => {
     const { titre,description,organisateur,monde,fin,nbreparticipantsmax,delai } = req.body;
 
     try {
+        const reqSQL ="SELECT id FROM compte where login='"+organisateur+"'";
+      const result0 = await pool.query(reqSQL);
+      const rows = result0.rows[0];
+
+        const d = new Date()
+
         const result = await pool.query(
-            "INSERT INTO chasse (titre,description,organisateur,monde,datefin,nbreparticipantsmax,montant,delai,statut) VALUES ($1, $2,$3,$4,$5,$6,$7,$8,$9) RETURNING *",
-            [titre,description,organisateur,monde,fin,nbreparticipantsmax,montant,delai,"Actif"]
+            "INSERT INTO chasse (titre,description,organisateur,monde,datefin,nbreparticipantsmax,montant,delai,statut,datecreation) VALUES ($1, $2,$3,$4,$5,$6,$7,$8,$9,$10) RETURNING *",
+            [titre,description,rows.id,monde,fin,nbreparticipantsmax,montant,delai,"Actif",d]
         );
         res.status(201).json(result.rows[0]);
     } catch (err) {
