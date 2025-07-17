@@ -71,7 +71,7 @@
             if (c.organisateur.login == username){
               const tr = document.createElement('tr')
 
-              tr.innerHTML = "<tr><td>"+c.titre+"</td><td>"+c.monde+"</td><td>"+c.montant+" €</td><td><button id='b"+c.id+"' class='littlebutton'>Plus d'infos</button></td></tr>"
+              tr.innerHTML = "<tr><td>"+c.titre+"</td><td>"+c.monde+"</td><td>"+c.montant+" €</td><td><button id='b"+c.id+"' class='littlebutton' onclick='location.href = "+'"/player/'+c.id+'"'+"'>Plus d'infos</button></td></tr>"
 
               tabr.appendChild(tr)
             }
