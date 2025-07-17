@@ -37,5 +37,25 @@
     "nom":"Blocage",
     "type":"Carte",
     "rarete":"Rare",
-    "utilisation":"Empêche un autre joueur de looter une cache pendant 5 min"
+    "utilisation":"Empêche un autre joueur de looter une cache pendant 5 minutes"
+},{
+    "nom":"Analyse",
+    "type":"Carte",
+    "rarete":"Commune",
+    "utilisation":"Donne des statistiques sur une cache ou une énigme"
+},{
+    "nom":"Invisibilité",
+    "type":"Carte",
+    "rarete":"Légendaire",
+    "utilisation":"Rendruvéee ses mouvements invisibles aux autres joueurs"
+},{
+    "nom":"Double Loot",
+    "type":"Carte",
+    "rarete":"Rare",
+    "utilisation":"Double la récompense trouvée"
+},{
+    "nom":"Épique",
+    "type":"Carte",
+    "rarete":"Rare",
+    "utilisation":"Se déplacer instantanément à un point de chasse"
 }]
