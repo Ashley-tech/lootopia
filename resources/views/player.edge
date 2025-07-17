@@ -18,6 +18,17 @@
       </div>
     </nav>
     <section class="scroll_y_auto">
+      <div>
+        <img src="/lootopia.webp" width="170" height="170" alt="LOOTOPIA" />
+      </div>
+      <h1>Liste des chasses disponibles</h1>
+      <table>
+        <thead>
+          <tr><th>Nom :</th><th>Monde :</th><th>Montant :</th><th></th></tr>
+        </thead>
+        <tbody id="chasses">
+        </tbody>
+      </table>
     </section>
      <footer>
       <div class="nav-right">
@@ -30,9 +41,10 @@
       import Cookie from 'https://cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.mjs'
       const username = Cookie.get('username')
       let userInfo = document.getElementById('user-info')
+      const tabr = document.getElementById("chasses")
 
     if(username){
-        userInfo.innerHTML = "<img src='/account.webp' class='pointer' alt='Profil' width='30' height='30' /><span>"+username+"</span><button onclick='deconnecter()'>Déconnexion</button>"
+        userInfo.innerHTML = "<img src='/account.webp' class='pointer' alt='Profil' width='30' height='30' /><span>"+username+"</span><button onclick='deconnecter()' class='buttond'>Déconnexion</button>"
       } else {
         userInfo.innerHTML = "<img src='/account.webp' class='pointer' onclick='location.href = "+'"/login"'+"' alt='Profil' width='30' height='30'/><span>Se connecter</span>"
       }
@@ -44,6 +56,30 @@
           location.reload()
         }
       }
+
+      async function chargerChasses() {
+        try {
+          const response = await fetch('http://127.0.0.1:3334/data/postgresql/chasse')
+          const chasses = await response.json()
+
+          if (!Array.isArray(chasses)) throw new Error("Réponse inattendue")
+
+          // Génération dynamique des lignes
+          chasses.forEach(c => {
+            if (c.organisateur.login == username){
+              const tr = document.createElement('tr')
+
+              tr.innerHTML = "<tr><td>"+c.titre+"</td><td>"+c.monde+"</td><td>"+c.montant+" €</td><td><button id='b"+c.id+"' class='littlebutton'>Plus d'infos</button></td></tr>"
+
+              tabr.appendChild(tr)
+            }
+          })
+        } catch (err) {
+          console.error("Erreur lors du chargement des récompenses :", err)
+          tabr.innerHTML = "<tr><td colspan='4'>Erreur de chargement des récompenses.</td></tr>"
+        }
+      }
+      chargerChasses()
       </script>
 </body>
 </html>

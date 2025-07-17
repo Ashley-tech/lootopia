@@ -21,9 +21,14 @@
       <div>
         <img src="/lootopia.webp" width="170" height="170" alt="LOOTOPIA" />
       </div>
-      <div id="chasses">
-        
-      </div>
+      <h1>Liste des chasses créées par toi</h1>
+      <table>
+        <thead>
+          <tr><th>Nom :</th><th>Monde :</th><th>Statut :</th></tr>
+        </thead>
+        <tbody id="chasses">
+        </tbody>
+      </table>
       <button class="bigbutton" onclick="location.href = '/chasse/create'">Nouvelle chasse</button>
     </section>
     <footer>
@@ -39,7 +44,7 @@
       let userInfo = document.getElementById('user-info')
 
     if(username){
-        userInfo.innerHTML = "<img src='/account.webp' class='pointer' alt='Profil' width='30' height='30' /><span>"+username+"</span><button onclick='deconnecter()'>Déconnexion</button>"
+        userInfo.innerHTML = "<img src='/account.webp' class='pointer' alt='Profil' width='30' height='30' /><span>"+username+"</span><button onclick='deconnecter()' class='buttond'>Déconnexion</button>"
       } else {
         userInfo.innerHTML = "<img src='/account.webp' class='pointer' onclick='location.href = "+'"/login"'+"' alt='Profil' width='30' height='30'/><span>Se connecter</span>"
       }
@@ -51,6 +56,31 @@
           location.reload()
         }
       }
+      const tabr = document.getElementById("chasses")
+
+      async function chargerChasses() {
+        try {
+          const response = await fetch('http://127.0.0.1:3334/data/postgresql/chasse')
+          const chasses = await response.json()
+
+          if (!Array.isArray(chasses)) throw new Error("Réponse inattendue")
+
+          // Génération dynamique des lignes
+          chasses.forEach(c => {
+            if (c.organisateur.login == username){
+              const tr = document.createElement('tr')
+
+              tr.innerHTML = "<tr><td>"+c.titre+"</td><td>"+c.monde+"</td><td>"+c.statut+"</td></tr>"
+
+              tabr.appendChild(tr)
+            }
+          })
+        } catch (err) {
+          console.error("Erreur lors du chargement des récompenses :", err)
+          tabr.innerHTML = "<tr><td colspan='3'>Erreur de chargement des récompenses.</td></tr>"
+        }
+      }
+      chargerChasses()
     </script>
 </body>
 </html>

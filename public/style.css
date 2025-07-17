@@ -73,6 +73,20 @@ body {
     font-size: 40px;
     width:25rem;
   }
+  .littlebutton{
+    padding: 5px;
+    background-color: blueviolet;
+    color: white;
+    font-family: 'Nunito', sans-serif;
+    font-size: 20px;
+    width:10rem;
+  }
+  .buttond{
+    background-color: blueviolet;
+    color: white;
+    font-family: 'Nunito', sans-serif;
+    font-size: 20px;
+  }
 
   .nav-list {
     list-style: none;        /* Enlève les points */
