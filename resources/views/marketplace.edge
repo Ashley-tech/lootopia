@@ -2,57 +2,52 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>LOOTOPIA - Home</title>
+  <title>LOOTOPIA - Marketplace</title>
   {{ style('style') }}
 </head>
 <body>
-    <nav>
-        <div class="nav-left">
-          <ul class="nav-list">
-            <li class="pointer" onclick="location.href = '/player'">Joueur</li>
+  <nav>
+    <div class="nav-left">
+      <ul class="nav-list">
+       <li class="pointer" onclick="location.href = '/player'">Joueur</li>
             <li class="pointer" onclick="location.href = '/organisator'">Organisateur</li>
             <li class="pointer" onclick="location.href = '/recompenses'">Récompenses disponibles</li>
             <li class="pointer" onclick="location.href = '/marketplace'">Marketplace</li>
             <li class="pointer" onclick="location.href = '/shop'">Boutique</li>
-          </ul>
-        </div>
-        <div id="user-info" class="nav-right">
-          
-      </div>
-    </nav>
-    <div>
-        <img src="/lootopia.webp" width="170" height="170" alt="LOOTOPIA" />
+      </ul>
     </div>
-    <div class="no_display" id="confirm_deconnect"></div>
-    <footer>
-      <div class="nav-right">
-        <ul class="nav-list">
-          <li>© 2025 Ashley RAKOTOARISOA<br />Projet réalisé dans le cadre de Sup de Vinci</li>
-        </ul>
-    </div>
-  </footer>
-    <script type="module">
-      import Cookie from 'https://cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.mjs'
+    <div class="nav-right" id="user-info">
+  </div>
+  </nav>
+  <section class="scroll_y_auto">
+    <img src="/lootopia.webp" width="170" height="170" alt="LOOTOPIA" /><br />
+    <h1>Marketplace</h1>
+  </section>
+  <footer>
+    <div class="nav-right">
+      <ul class="nav-list">
+        <li>© 2025 Ashley RAKOTOARISOA<br />Projet réalisé dans le cadre de Sup de Vinci</li>
+      </ul>
+  </div>
+</footer>
+<script type="module">
+  import Cookie from 'https://cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.mjs'
       const username = Cookie.get('username')
       let userInfo = document.getElementById('user-info')
 
-      console.log(username)
-
-      if(username){
+    if(username){
         userInfo.innerHTML = "<img src='/account.webp' class='pointer' alt='Profil' width='30' height='30' /><span>"+username+"</span><button onclick='deconnecter()' class='buttond'>Déconnexion</button>"
       } else {
         userInfo.innerHTML = "<img src='/account.webp' class='pointer' onclick='location.href = "+'"/login"'+"' alt='Profil' width='30' height='30'/><span>Se connecter</span>"
       }
 
-
-      window.deconnecter = function() {
+       window.deconnecter = function() {
         var con = confirm("Are you sure ?")
         if (con){
           Cookie.remove("username")
           location.reload()
         }
       }
-
-    </script>
+  </script>
 </body>
 </html>
