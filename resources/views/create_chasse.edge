@@ -8,11 +8,14 @@
 <body>
   <nav>
     <div class="nav-left">
-      <ul class="nav-list">
-        <li class="pointer" onclick="location.href = '/player'">Joueur</li>
+          <ul class="nav-list">
+            <li class="pointer" onclick="location.href = '/player'">Joueur</li>
             <li class="pointer" onclick="location.href = '/organisator'">Organisateur</li>
             <li class="pointer" onclick="location.href = '/recompenses'">Récompenses disponibles</li>
-      </ul>
+          </ul>
+        </div>
+        <div class="nav-right" id="user-info">
+      </div>
     </div>
   </nav>
 
@@ -21,9 +24,20 @@
     <h1>Nouvelle chasse :</h1>
     <table>
       <tbody>
-        <tr><th>Login* :</th><td><input type="text" placeholder="Login" id="logini" /></td></tr>
+        <tr><th>Titre* :</th><td><input type="text" placeholder="Titre*" id="titre" /></td></tr>
+        <tr><th>Description :</th><td><textarea placeholder="Description" id="description"></textarea></td></tr>
+        <tr><th>Monde* :</th><td><select id="monde"><option value="">--</option><option value="Privé">Privé</option><option value="Publique">Publique</option></td></tr>
+          <tr><th>Date de fin :</th><td><input type="date" id="df"/></td></tr>
+          <tr><th>Nombre maximum de participants* :</th><td><input type="number" id="nbremax" min="2" /></td></tr>
+          <tr><th>Délai (en jours)* :</th><td><input type="number" id="delaij" min="1" /></td></tr>
+          <tr><th>Montant* :</th><td><input type="number" id="montant" step="0.01" min="0" /></td></tr>
+          <tr id="empty" class="no_display rouge"><td colspan="2">Les champs avec * sont obligatoires</td></tr>
+          <tr id="dfv" class="no_display rouge"><td colspan="2">La date de fin saisi n'est pas valide.</td></tr>
+          <tr id="inf" class="no_display rouge"><td colspan="2">Le nombre maximum de participant ne doit pas être inférieur à 2. Le délai ne peut pas être inférieur à 1. Le montant ne doit pas être négatif.</td></tr>
+          <tr id="error" class="no_display rouge"><td colspan="2">Une erreur s'est produite lors de l'ajout de la chasse</td></tr>
+          <tr id="succes" class="no_display vert"><td colspan="2">Chasse ajouté avec succès</td></tr>
         <tr>
-          <td><button class="bigbutton" id="sign">Valider</button></td>
+          <td><button class="bigbutton" id="valid">Valider</button></td>
           <td><button class="bigbutton" onclick="location.href = '/organisator'">Retour</button></td>
         </tr>
       </tbody>
@@ -37,8 +51,74 @@
       </ul>
     </div>
   </footer>
-    <script>
-        
+    <script type="module">
+        import Cookie from 'https://cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.mjs'
+      const username = Cookie.get('username')
+      let userInfo = document.getElementById('user-info')
+
+    if(username){
+        userInfo.innerHTML = "<img src='/account.webp' class='pointer' alt='Profil' width='30' height='30' /><span>"+username+"</span><button onclick='deconnecter()'>Déconnexion</button>"
+      } else {
+        location.href = "/"
+      }
+
+      document.getElementById("nbremax").value = 2
+      document.getElementById("delaij").value = 1
+      document.getElementById("montant").value = 0.00
+
+       window.deconnecter = function() {
+        var con = confirm("Are you sure ?")
+        if (con){
+          Cookie.remove("username")
+          location.href = "/"
+        }
+      }
+      document.getElementById("valid").addEventListener("click", async (e) => {
+            e.preventDefault();
+            document.getElementById("empty").style.display = "none"
+            document.getElementById("dfv").style.display = "none"
+            document.getElementById("inf").style.display = "none"
+            document.getElementById("error").style.display = "none"
+            document.getElementById("succes").style.display = "none"
+            const dv = new Date(document.getElementById("df").value)
+            console.log(document.getElementById("df").value)
+            if (document.getElementById("titre").value == "" || document.getElementById("monde").selectedIndex == 0 ||document.getElementById("nbremax").value == "" ||document.getElementById("delaij").value == "" || document.getElementById("montant").value == ""){
+              document.getElementById("empty").style.display = "table-cell"
+            } else if (document.getElementById("df").value != "" && dv <= date) {
+              document.getElementById("dfv").style.display = "table-cell"
+            } else if (parseInt(document.getElementById("nbremax").value) < 2 ||parseInt(document.getElementById("delaij").value) < 1 || parseFloat(document.getElementById("montant").value) < 0.00){
+              document.getElementById("inf").style.display = "table-cell"
+            }else {
+              try {
+                const titre =document.getElementById("titre").value
+                const description = document.getElementById("description").value
+                let fin = document.getElementById("df").value
+                if (fin == ""){
+                  fin= null
+                }
+                const m = document.getElementById("monde")
+                const indexm = m.selectedIndex
+                const monde = m.options[indexm].value
+                const delai = parseInt(document.getElementById("delaij").value)
+                const montant = parseFloat(document.getElementById("montant").value)
+                const nbreparticipantsmax = parseInt(document.getElementById("nbremax").value)
+                const response = await fetch("http://127.0.0.1:3334/chasse", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ titre,description,organisateur:username,monde,fin,nbreparticipantsmax,montant,delai })
+                });
+                const result = await response.json();
+                console.log(result)
+                document.getElementById("succes").style.display = "table-cell"
+                setTimeout(function () {
+                  location.href = "/organisator"
+                }, 250);
+              } catch (error) {
+                console.log(error)
+                document.getElementById("error").style.display = "table-cell"
+              }
+            }
+      })
     </script>
 </body>
 </html>

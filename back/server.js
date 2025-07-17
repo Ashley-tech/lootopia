@@ -200,7 +200,7 @@ app.post("/inscription/:participant/:chasse",async (req,res) => {
 })
 
 app.post("/chasse",async (req,res) => {
-    const { titre,description,organisateur,monde,fin,nbreparticipantsmax,delai } = req.body;
+    const { titre,description,organisateur,monde,fin,nbreparticipantsmax,montant, delai } = req.body;
 
     try {
         const reqSQL ="SELECT id FROM compte where login='"+organisateur+"'";
@@ -208,10 +208,25 @@ app.post("/chasse",async (req,res) => {
       const rows = result0.rows[0];
 
         const d = new Date()
+        let month,day;
+            if (d.getMonth() + 1 < 10){
+                month = "0"+(d.getMonth()+1).toString()
+            } else {
+                month = (d.getMonth()+1).toString()
+            }
+
+            if (d.getDate() < 10){
+                day = "0"+d.getDate().toString()
+            } else {
+                day = d.getDate().toString()
+            }
+        const t = d.getFullYear()+"-"+month+"-"+day
+        console.log(t)
+        console.log("datefin",fin)
 
         const result = await pool.query(
             "INSERT INTO chasse (titre,description,organisateur,monde,datefin,nbreparticipantsmax,montant,delai,statut,datecreation) VALUES ($1, $2,$3,$4,$5,$6,$7,$8,$9,$10) RETURNING *",
-            [titre,description,rows.id,monde,fin,nbreparticipantsmax,montant,delai,"Actif",d]
+            [titre,description,rows.id,monde,fin,nbreparticipantsmax,montant,delai,"Actif",t]
         );
         res.status(201).json(result.rows[0]);
     } catch (err) {
