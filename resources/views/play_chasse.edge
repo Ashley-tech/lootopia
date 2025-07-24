@@ -71,16 +71,10 @@
       }
 
       async function chargement(){
-        incrementer()
         const resNb = await fetch("http://127.0.0.1:3334/chasse/"+id+"/nbreparticipants")
         const nb = await resNb.json()
         console.log(nb)
         document.getElementById("participants").innerHTML = nb.nombre
-      }
-      async function incrementer(){
-        const response = await fetch("http://127.0.0.1:3334/chasse/"+id+"/click", {
-            method: "PUT"
-          });
       }
       /*document.getElementById("valid").addEventListener("click", async (e) => {
             e.preventDefault();
