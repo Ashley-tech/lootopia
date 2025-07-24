@@ -46,6 +46,9 @@
       </ul>
     </div>
   </footer>
+  <script>
+    const id = {{ id }};
+    </script>
     <script type="module">
         import Cookie from 'https://cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.mjs'
       const username = Cookie.get('username')
@@ -56,6 +59,7 @@
       } else {
         userInfo.innerHTML = "<img src='/account.webp' class='pointer' onclick='location.href = "+'"/login"'+"' alt='Profil' width='30' height='30'/><span>Se connecter</span>"
       }
+      incrementer()
 
        window.deconnecter = function() {
         var con = confirm("Are you sure ?")
@@ -63,6 +67,13 @@
           Cookie.remove("username")
           location.href = "/"
         }
+      }
+
+      async function incrementer(){
+        const response = await fetch("http://127.0.0.1:3334/chasse/"+id+"/click", {
+            method: "PUT"
+          });
+
       }
       /*document.getElementById("valid").addEventListener("click", async (e) => {
             e.preventDefault();

@@ -19,6 +19,7 @@ CREATE table chasse(
 	montant FLOAT DEFAULT 0,
 	delai INTEGER,
 	statut VARCHAR(15) NOT NULL,
+	nbclicks INTEGER NOT NULL DEFAULT 0,
 	CONSTRAINT fk_org FOREIGN KEY (organisateur) REFERENCES compte(id)
 );
 
