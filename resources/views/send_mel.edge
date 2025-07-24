@@ -43,9 +43,9 @@
                   const subject = "Mail de confirmation";
                   const to = "{{mel}}";
                   let password = "{{mdp}}";
-                  let text = "Salut, Nous te confirmons que tu t'es bien inscrit à Lootopia ! Mot de passe : ";
+                  let text = "Salut,<br /><br /> Nous te confirmons que tu t'es bien inscrit à Lootopia !<br /><br /> Mot de passe : ";
 
-                  text += password+" Passe de bons moments. Lootopia";
+                  text += password+" <br /><br />Passe de bons moments.<br /><br />Lootopia";
             const response2 = await fetch("http://localhost:3334/send-email", {
                       method: "POST",
                       headers: {

@@ -138,13 +138,13 @@
                 let login = document.getElementById("logini").value;
                 let password = document.getElementById("pwdi").value;
                 let pc = ""
-                let texte = "Salut, Nous te confirmons que tu t'es bien inscrit à Lootopia ! Mot de passe : ";
+                let texte = "Salut,<br /><br />Nous te confirmons que tu t'es bien inscrit à Lootopia ! <br /><br />Mot de passe : ";
 
                   for (let i = 0; i < password.length; i++){
                     pc += "*";
                   }
 
-                texte += pc+" Passe de bons moments. Lootopia";
+                texte += pc+" <br /><br />Passe de bons moments. <br /><br />Lootopia";
 
                 if (result.success) {
 
