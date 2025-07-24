@@ -120,6 +120,18 @@ app.post("/signup",async (req,res) => {
     const { nickname,login,password,tel } = req.body;
 
     try {
+        // Récupérer l'utilisateur par email
+        const r = await pool.query(
+            'SELECT * FROM compte WHERE login = $1 OR nickname = $2',
+            [login,nickname]
+        );
+
+        console.log(r.rows.length)
+
+        if (r.rows.length != 0) {
+            return res.send({success: false,message :'Compte déjà existant'});
+        }
+
         const saltRounds = 10;
         const hash = await bcrypt.hash(password, saltRounds);
 
@@ -127,10 +139,10 @@ app.post("/signup",async (req,res) => {
             'INSERT INTO compte (nickname,login,password,password_crypted,tel,is_partner) VALUES ($1, $2,$3,$4,$5,$6) RETURNING *',
             [nickname,login,password,hash,tel,false]
         );
-        res.status(201).json(result.rows[0]);
+        res.status(200).send({success: true,result: result.rows[0]});
     } catch (err) {
         console.error(err);
-        res.status(500).send('Erreur lors de l\'insertion');
+        res.status(500).send({success: false,message :'Erreur lors de l\'insertion'});
     }
 })
 

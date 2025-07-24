@@ -22,8 +22,8 @@
         <h1>Signup : </h1>
         <table>
             <tbody>
-                <tr><td colspan="2">Mail envoyé. L'as-tu bien reçu ?</td></tr>
-                <tr><td><button class="bigbutton" id="renvoi">Non, renvoie moi ce mail</button></td><td><button onclick="location.href = '/home'">J'ai bien reçu le mail de confirmation</button></td></tr>
+                <tr><td colspan="2">Mail de confirmation envoyé. L'as-tu bien reçu ?</td></tr>
+                <tr><td><button class="bigbutton" id="renvoi">Non, renvoie moi ce mail</button></td><td><button class="bigbutton" onclick="location.href = '/home'">J'ai bien reçu le mail de confirmation</button></td></tr>
             </tbody>
         </table>
   </section>
@@ -34,11 +34,29 @@
         </ul>
     </div>
   </footer>
-    <script>
-      import Cookie from "js-cookie";
+    <script type="module">
+      import Cookie from 'https://cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.mjs'
        document.getElementById("renvoi").addEventListener("click", async (e) => {
             e.preventDefault();
+            try {
+              const from = "no-reply@lootopia.com"
+                  const subject = "Mail de confirmation";
+                  const to = "{{mel}}";
+                  let password = "{{mdp}}";
+                  let text = "Salut, Nous te confirmons que tu t'es bien inscrit à Lootopia ! Mot de passe : ";
 
+                  text += password+" Passe de bons moments. Lootopia";
+            const response2 = await fetch("http://localhost:3334/send-email", {
+                      method: "POST",
+                      headers: {
+                        "Content-Type": "application/json"
+                      },
+                      body: JSON.stringify({ from,to,subject,text})
+                    });
+                    alert("Mail renvoyé avec succès")
+                  }catch(error){
+                    alert("Echec de renvoi de mail")
+                  }
         })
     </script>
 </body>

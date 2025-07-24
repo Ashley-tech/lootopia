@@ -24,7 +24,13 @@ Route.on('/player').render("player")
 Route.on('/organisator').render("organisator")
 Route.on('/account').render("account")
 Route.on('/account/modify').render("modify")
-Route.on('/signup/success').render("send_mel")
+Route.get("/signup/success", async ({request,view}) => {
+  const mel = request.input("login")
+  const mdp = request.input("mdp")
+  return view.render("send_mel", {
+    mel,mdp
+  })
+})
 Route.on('/recompenses').render("recompenses")
 Route.on('/chasse/create').render("create_chasse")
 Route.on('/marketplace').render("marketplace")

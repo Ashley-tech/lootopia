@@ -44,6 +44,7 @@
         <!-- Error messages -->
         <tr><td colspan="2" class="no_display rouge" id="empty">Tous les champs sont obligatoires</td></tr>
         <tr><td colspan="2" class="no_display rouge" id="diffl">Les logins sont différents</td></tr>
+        <tr><td colspan="2" class="no_display rouge" id="meme">Un compte possède déjà soit le login tu as saisi ou soit l'adresse email que tu as saisi. Merci de réessayer</td></tr>
         <tr><td colspan="2" class="no_display rouge" id="diffe">Les emails sont différents</td></tr>
         <tr><td colspan="2" class="no_display rouge" id="incorrecte">L'email ne respecte pas la norme classique</td></tr>
         <tr><td colspan="2" class="no_display rouge" id="diffp">Les mots de passes sont différents</td></tr>
@@ -95,6 +96,7 @@
             document.getElementById("empty").style.display = "none"
             document.getElementById("diffl").style.display = "none"
             document.getElementById("diffe").style.display = "none"
+            document.getElementById("meme").style.display = "none"
             document.getElementById("diffp").style.display = "none"
             document.getElementById("incorrecte").style.display = "none"
             document.getElementById("incorrectp").style.display = "none"
@@ -135,29 +137,37 @@
                 const subject = "Mail de confirmation";
                 let login = document.getElementById("logini").value;
                 let password = document.getElementById("pwdi").value;
+                let pc = ""
                 let texte = "Salut, Nous te confirmons que tu t'es bien inscrit à Lootopia ! Mot de passe : ";
 
                   for (let i = 0; i < password.length; i++){
-                    texte += "*";
+                    pc += "*";
                   }
 
-                texte += " Passe de bons moments. Lootopia";
+                texte += pc+" Passe de bons moments. Lootopia";
 
-                const response2 = await fetch("http://localhost:5174/send-email", {
-                  method: "POST",
-                  headers: {
-                    "Content-Type": "application/json"
-                  },
-                  body: JSON.stringify({ from,to,subject,text:texte})
-                });
+                if (result.success) {
 
-                const result2 = await response2.json();
-                console.log(result2)
+                  const response2 = await fetch("http://localhost:3334/send-email", {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ from,to,subject,text:texte})
+                  });
 
-                if (result.success && result2.success) {
-                  location.href = "/signup/success";
+                  const result2 = await response2.json();
+                  console.log(result2)
+                  if (result2.success == false){
+                    alert("Nous n'avons pas pu envoyer de mail")
+                  }
+                  location.href = "/signup/success?login="+to+"&mdp="+pc;
                 } else {
-                  document.getElementById("erreur").style.display = "table-cell";
+                  if (result.message == "Compte déjà existant"){
+                    document.getElementById("meme").style.display = "table-cell"
+                  } else {
+                    document.getElementById("erreur").style.display = "table-cell";
+                  }
                 }
               } catch (e){
                 console.log(e)
