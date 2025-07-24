@@ -34,6 +34,7 @@
             <tr><th>Places restantes :</th><td id="places"></td></tr>
             <tr><th>Montant :</th><td id="montant"></td></tr>
             <tr><th>Statut :</th><td id="statut"></td></tr>
+            <tr><th>Nombre de participants inscrits :</th><td id="participants"></td></tr>
             <tr><td id="bj"></td><td><button class="bigbutton" onclick="location.href = '/player'">Retour</button></td></tr>
         </tbody>
     </table>
@@ -59,7 +60,7 @@
       } else {
         userInfo.innerHTML = "<img src='/account.webp' class='pointer' onclick='location.href = "+'"/login"'+"' alt='Profil' width='30' height='30'/><span>Se connecter</span>"
       }
-      incrementer()
+      chargement()
 
        window.deconnecter = function() {
         var con = confirm("Are you sure ?")
@@ -69,11 +70,17 @@
         }
       }
 
+      async function chargement(){
+        incrementer()
+        const resNb = await fetch("http://127.0.0.1:3334/chasse/"+id+"/nbreparticipants")
+        const nb = await resNb.json()
+        console.log(nb)
+        document.getElementById("participants").innerHTML = nb.nombre
+      }
       async function incrementer(){
         const response = await fetch("http://127.0.0.1:3334/chasse/"+id+"/click", {
             method: "PUT"
           });
-
       }
       /*document.getElementById("valid").addEventListener("click", async (e) => {
             e.preventDefault();

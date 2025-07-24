@@ -246,6 +246,22 @@ app.post("/chasse",async (req,res) => {
     }
 })
 
+app.get("/chasse/:id/nbreparticipants",async (req,res) => {
+    const {id} = req.params;
+    let nb = 0;
+    try {
+    const result = await pool.query(
+      'SELECT COUNT(*) FROM participation WHERE chasse = $1',
+      [id]
+    );
+    const nb = parseInt(result.rows[0].count, 10);
+    return res.status(200).json({ nombre: nb });
+  } catch (error) {
+    console.error("Erreur de base de données :", error);
+    return res.status(500).json({ nombre: 0 });
+  }
+})
+
 app.get('/data/postgresql/:table', async (req, res) => {
     const { table } = req.params;
   try {
