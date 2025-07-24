@@ -35,6 +35,7 @@
             <tr><th>Montant :</th><td id="montant"></td></tr>
             <tr><th>Statut :</th><td id="statut"></td></tr>
             <tr><th>Nombre de participants inscrits :</th><td id="participants"></td></tr>
+            <tr><th>Nombre de vues :</th><td id="vues"></td></tr>
             <tr><td id="bj"></td><td><button class="bigbutton" onclick="location.href = '/player'">Retour</button></td></tr>
         </tbody>
     </table>
@@ -69,12 +70,29 @@
           location.href = "/"
         }
       }
+      async function augmenterVues(){
+        const response = await fetch("http://127.0.0.1:3334/chasse/"+id+"/vues", {
+            method: "PUT"
+          });
+      }
 
       async function chargement(){
+        augmenterVues()
         const resNb = await fetch("http://127.0.0.1:3334/chasse/"+id+"/nbreparticipants")
         const nb = await resNb.json()
-        console.log(nb)
         document.getElementById("participants").innerHTML = nb.nombre
+        const response = await fetch("http://127.0.0.1:3334/data/postgresql/chasse")
+        const rj = await response.json()
+        const index = rj.findIndex(obj => obj.id == id)
+        document.getElementById("nom").innerHTML = rj[index].titre
+        document.getElementById("description").innerHTML = rj[index].description
+        document.getElementById("organisateur").innerHTML = rj[index].organisateur.nickname
+        document.getElementById("monde").innerHTML = rj[index].monde
+        document.getElementById("fin").innerHTML = rj[index].datefin
+        document.getElementById("montant").innerHTML = rj[index].montant
+        document.getElementById("places").innerHTML = rj[index].nbreparticipantsmax - nb.nombre
+        document.getElementById("statut").innerHTML = rj[index].statut
+        document.getElementById("vues").innerHTML = rj[index].nbvues
       }
       /*document.getElementById("valid").addEventListener("click", async (e) => {
             e.preventDefault();
