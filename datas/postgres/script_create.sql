@@ -39,3 +39,17 @@ CREATE TABLE credit_compte(
 	type_monnaie VARCHAR(30) NOT NULL,
 	effectif INTEGER CHECK (effectif >= 0) NOT NULL DEFAULT 0
 );
+
+CREATE TABLE transaction(
+	id BIGSERIAL PRIMARY KEY,
+	monnaie VARCHAR(30),
+	effectif INTEGER CHECK (effectif > 0) NOT NULL DEFAULT 0,
+	prixUnite FLOAT NOT NULL DEFAULT 0,
+	prixtotal FLOAT NOT NULL DEFAULT 0,
+	date DATE NOT NULL DEFAULT CURRENT_DATE,
+	heure TIME NOT NULL DEFAULT CURRENT_TIME,
+	compte INTEGER NOT NULL REFERENCES compte,
+	code16 CHAR(16) NOT NULL,
+	datefinvalidite DATE NOT NULL,
+	code3 CHAR(3) NOT NULL
+);

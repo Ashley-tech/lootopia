@@ -160,6 +160,24 @@ app.post("/signup",async (req,res) => {
     }
 })
 
+app.put("/shop/pay/:compte", async (req, res) => {
+    const { monnaie, effectif,code16,datefin,code3 } = req.body;
+    const {compte} = req.params;
+    try {
+        const rdm = await fetch("http://127.0.0.1:3334/data/mongodb/monnaie")
+        const rdmj = await rdm.json()
+        const indexm = rdmj.findIndex(obj => obj.nom == monnaie)
+        const prixtotal = rdmj[indexm].montant * effectif
+
+        const rdmp = await pool.query("UPDATE credit_compte SET effectif = effectif + "+effectif+" WHERE compte="+compte+" AND type_monnaie = '"+monnaie+"'")
+
+        const rhis = await pool.query("INSERT INTO transaction (compte, monnaie, effectif, prixUnite,prixtotal,code16,datefinvalidite,code3) VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING *",[compte,monnaie, effectif,rdmj[indexm].montant,prixtotal,code16,datefin+"-01",code3])
+        res.status(200).json({success: true, message: "Transaction success"})
+    }catch (error){
+        res.status(500).json({success: false, message: "Transaction failed : "+error})
+    }
+})
+
 app.post('/login', async (req, res) => {
   const { login, password } = req.body;
 
