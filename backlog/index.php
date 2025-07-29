@@ -75,7 +75,14 @@ $comptes = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <td><?= htmlspecialchars($compte['password']) ?></td>
                         <td><?= htmlspecialchars($compte['password_crypted']) ?></td>
                         <td><?= htmlspecialchars($compte['tel']) ?></td>
-                        <td><?= $compte['is_partner'] ? 'Oui' : 'Non'; if ($compte['is_partner'] == false):?><button>Lui faire devenir partenaire</button><?php endif; ?></td>
+                        <td>
+                            <?= $compte['is_partner'] ? 'Oui' : 'Non' ?>
+                            <?php if (!$compte['is_partner']): ?>
+                                <button onclick="window.location.href='/controllers/update_partner.php?id=<?= urlencode($compte['id']) ?>'">
+                                    Lui faire devenir partenaire
+                                </button>
+                            <?php endif; ?>
+                        </td>
                         <td><?= $compte['brand'] ?></td>
                     </tr>
                 <?php endforeach; ?>
