@@ -53,3 +53,19 @@ CREATE TABLE transaction(
 	datefinvalidite DATE NOT NULL,
 	code3 CHAR(3) NOT NULL
 );
+
+CREATE TABLE article(
+	id BIGSERIAL PRIMARY KEY,
+	nom VARCHAR(100),
+	marque VARCHAR(40),
+	sousmarque VARCHAR(50),
+	type_monnaie VARCHAR(56) NOT NULL,
+	nombre_monnaie INTEGER NOT NULL CHECK (nombre_monnaie >= 0),
+	vendeur INTEGER REFERENCES compte
+);
+
+CREATE TABLE article_achete(
+	article INTEGER REFERENCES article,
+	acheteur INTEGER REFERENCES compte,
+	CONSTRAINT pk_achat PRIMARY KEY (article,acheteur)
+);
