@@ -1,0 +1,35 @@
+[{
+  "_id": {
+    "$oid": "6888ba9769e54bf22c453cbc"
+  },
+  "nom": "Pièce d'or",
+  "montant": 1.49
+},
+{
+  "_id": {
+    "$oid": "6888ba9769e54bf22c453cbd"
+  },
+  "nom": "Diamant Lootopia",
+  "montant": 0.39
+},
+{
+  "_id": {
+    "$oid": "6888ba9769e54bf22c453cbe"
+  },
+  "nom": "Jeton Loot",
+  "montant": 0.79
+},
+{
+  "_id": {
+    "$oid": "6888ba9769e54bf22c453cbf"
+  },
+  "nom": "Crédit de chasse",
+  "montant": 0.49
+},
+{
+  "_id": {
+    "$oid": "6888ba9769e54bf22c453cc0"
+  },
+  "nom": "Passe Premium",
+  "montant": 2.99
+}]

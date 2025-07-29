@@ -145,15 +145,13 @@ app.post("/signup",async (req,res) => {
         );
         const idc = result0.rows[0]
         
-        const r2 = await fetch ("http://127.0.0.1:3334/data/mongodb/recompense")
+        const r2 = await fetch ("http://127.0.0.1:3334/data/mongodb/monnaie")
         const ro2 = await r2.json()
         ro2.forEach(async m => {
-            if (m.type == "Monnaie virtuelle"){
                 let result = await pool.query(
                     'INSERT INTO credit_compte (compte,type_monnaie) VALUES ($1, $2) RETURNING *',
                     [idc.id , m.nom]
                 );
-            }
           })
         res.status(200).send({success: true,result: result.rows[0]});
     } catch (err) {
