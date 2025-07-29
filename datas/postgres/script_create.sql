@@ -33,3 +33,9 @@ CREATE table participation(
 	CONSTRAINT fk_joueur FOREIGN KEY (joueur) references compte(id),
 	CONSTRAINT fk_ch FOREIGN KEY (chasse) references chasse(id)
 );
+
+CREATE TABLE credit_compte(
+	compte INTEGER REFERENCES compte NOT NULL,
+	type_monnaie VARCHAR(30) NOT NULL,
+	effectif INTEGER CHECK (effectif >= 0) NOT NULL DEFAULT 0
+);
