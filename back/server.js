@@ -352,6 +352,60 @@ app.get('/data/postgresql/:table', async (req, res) => {
         }));
 
         res.json(rowsWithRelations);
+    } else if (table == "article_achete") {
+        reqSQL = 'SELECT * FROM article_achete';
+        const result = await pool.query(reqSQL);
+        const rows = result.rows;
+
+        const rowsWithRelations = await Promise.all(rows.map(async (row) => {
+            // Remplacement de joueur
+            const acheteurResult = await pool.query('SELECT * FROM compte WHERE id = $1', [row.acheteur]);
+            row.acheteur = acheteurResult.rows[0];
+
+            // Remplacement de chasse
+            const articleResult = await pool.query('SELECT * FROM articlee WHERE id = $1', [row.article]);
+            row.article = articleResult.rows[0];
+
+            return row;
+        }));
+
+        res.json(rowsWithRelations);
+    } else if (table == "article") {
+        reqSQL ="SELECT a.id,nom,marque,sousmarque,type_monnaie,nombremonnaie,vendeur FROM article a join compte co on (vendeur = co.id)";
+      const result = await pool.query(reqSQL);
+      const rows = result.rows;
+
+      const rowsWithVendeur = await Promise.all(rows.map(async (row) => {
+        const compteResult = await pool.query('SELECT * FROM compte WHERE id = $1', [row.vendeur]);
+        row.vendeur = compteResult.rows[0]; // Remplace l'ID par l'objet compte
+        return row;
+      }));
+
+      res.json(rowsWithVendeur)
+    } else if (table == "credit_compte") {
+        reqSQL ="SELECT compte,type_monnaie,effectif FROM credit_compte";
+      const result = await pool.query(reqSQL);
+      const rows = result.rows;
+
+      const rowsWithCC = await Promise.all(rows.map(async (row) => {
+        const compteResult = await pool.query('SELECT * FROM compte WHERE id = $1', [row.compte]);
+        row.compte = compteResult.rows[0]; // Remplace l'ID par l'objet compte
+        return row;
+      }));
+
+      res.json(rowsWithCC)
+    } else if (table == "transaction") {
+        reqSQL ="SELECT * FROM transaction";
+      const result = await pool.query(reqSQL);
+      const rows = result.rows;
+
+      const rowsWithCT = await Promise.all(rows.map(async (row) => {
+        const compteResult = await pool.query('SELECT * FROM compte WHERE id = $1', [row.compte]);
+        row.compte = compteResult.rows[0]; // Remplace l'ID par l'objet compte
+        return row;
+      }));
+
+      res.json(rowsWithCT)
     } else {
       reqSQL = 'SELECT * FROM ' + table;
       const result = await pool.query(reqSQL);
