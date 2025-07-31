@@ -34,6 +34,7 @@ Route.get("/signup/success", async ({request,view}) => {
 Route.on('/recompenses').render("recompenses")
 Route.on('/chasse/create').render("create_chasse")
 Route.on('/marketplace').render("marketplace")
+Route.on('/marketplace/articles').render("articles")
 Route.on('/shop').render("boutique")
 Route.get('/player/:chasse', async ({ params,view }) => {
   const id = params.chasse

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>LOOTOPIA - Marketplace</title>
+  {{ style('style') }}
+</head>
+<body>
+  <nav>
+    <div class="nav-left">
+      <ul class="nav-list">
+       <li class="pointer" onclick="location.href = '/player'">Joueur</li>
+            <li class="pointer" onclick="location.href = '/organisator'">Organisateur</li>
+            <li class="pointer" onclick="location.href = '/recompenses'">Récompenses disponibles</li>
+            <li class="pointer" onclick="location.href = '/marketplace'">Marketplace</li>
+            <li class="pointer" onclick="location.href = '/shop'">Boutique</li>
+      </ul>
+    </div>
+    <div class="nav-right" id="user-info">
+  </div>
+  </nav>
+  <section class="scroll_y_auto">
+    <img src="/lootopia.webp" width="170" height="170" alt="LOOTOPIA" /><br />
+    <h1>Liste de tes produits achetés</h1><br />
+    <div id="pros" style='font-size:25px;'>
+
+    </div>
+      <button class='bigbutton' onclick="location.href = '/marketplace'">Retour au marketplace</button>
+    </div>
+  </section>
+  <footer>
+    <div class="nav-right">
+      <ul class="nav-list">
+        <li>© 2025 Ashley RAKOTOARISOA<br />Projet réalisé dans le cadre de Sup de Vinci</li>
+      </ul>
+  </div>
+</footer>
+<script type="module">
+  import Cookie from 'https://cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.mjs'
+      const username = Cookie.get('username')
+      let userInfo = document.getElementById('user-info')
+
+      var divs = []
+
+    if(username){
+        userInfo.innerHTML = "<img src='/account.webp' class='pointer' alt='Profil' width='30' height='30' /><span>"+username+"</span><button onclick='deconnecter()' class='buttond'>Déconnexion</button>"
+      } else {
+        document.getElementById("bs").style.display = "none"
+        userInfo.innerHTML = "<img src='/account.webp' class='pointer' onclick='location.href = "+'"/login"'+"' alt='Profil' width='30' height='30'/><span>Se connecter</span>"
+      }
+      chargement()
+
+      async function chargement() {
+        var pros  = document.getElementById("pros")
+        var type = document.getElementById("type")
+        try {
+          const response = await fetch("http://127.0.0.1:3334/data/postgresql/article_achete")
+          const r = await response.json()
+          if (r.length == 0){
+            pros.innerHTML = "Aucun article de trouvé<br /><br />"
+          } else {
+            let compteur = 0;
+            for (let i = 0 ; i < r.length ; i++) {
+                if (r[i].acheteur.login == username){
+                    compteur++;
+                    var d = new Date(r[i].date_achat)
+                    var dateFormatted = d.toISOString().split('T')[0];
+
+                    const div = document.createElement('div')
+                    div.innerHTML = "<div style='margin: 10px'><b><i>Article "+compteur+" :</i></b><br /><b  style='color: cyan;'>Nom : </b>"+r[i].article.nom+" "
+                        if (r[i].marque != "") {
+                        div.innerHTML+="<b style='color: cyan;'>Marque : </b>"+r[i].article.marque
+                        }
+                        if (r[i].sousmarque != ""){
+                            div.innerHTML+="<br /><b style='color: cyan;'>Sous-marque : </b>"+r[i].article.sousmarque
+                        }
+                        div.innerHTML += "<br /><b style='color: cyan;'>Vendeur : </b>"+r[i].article.vendeur.nickname
+                        div.innerHTML += "<br /><b style='color: cyan;'>Prix : </b>"+r[i].article.nombre_monnaie+" "+r[i].article.type_monnaie+"(s)"
+                        div.innerHTML += "<br /><b style='color: cyan;'>Date d'achat : </b>"+dateFormatted
+                        div.innerHTML += "<br /><b style='color: cyan;'>Heure d'achat : </b>"+r[i].heure_achat.split('.')[0]
+                        div.innerHTML+="</div>"
+                    pros.appendChild(div)
+                    pros.innerHTML+="<hr /><br />"
+                }
+            }
+          }
+        }catch (e) {
+          console.log(e)
+          pros.innerHTML = "Impossible de charger tes produits achetés"
+        }
+      }
+
+      window.fermer = function(div){
+        document.getElementById(div).style.display = "none"
+      }
+
+      window.ouvrir = function(div){
+        document.getElementById(div).style.display = "block"
+        document.getElementById(div).scrollTop = 0
+        for (let i = 0 ; i < divs.length ; i++){
+          if (divs[i] != div){
+            fermer(divs[i])
+          }
+        }
+      }
+
+       window.deconnecter = function() {
+        var con = confirm("Are you sure ?")
+        if (con){
+          Cookie.remove("username")
+          location.reload()
+        }
+      }
+  </script>
+</body>
+</html>

@@ -116,6 +116,37 @@ app.patch("/data/mongodb/:collection/remove-field", async (req, res) => {
     }
 });
 
+app.post("/marketplace/send/:compte", async (req,res) => {
+    const {compte} = req.params;
+    const {nom,marque,sousmarque,type,effectif} = req.body;
+    try {
+        const r = await pool.query("INSERT INTO article (nom,marque,sousmarque,type_monnaie,nombre_monnaie,vendeur) VALUES ($1,$2,$3,$4,$5,$6) RETURNING *",[nom,marque,sousmarque,type,effectif,compte])
+        res.json({ success: true, message: "Article vendu avec succès."});
+    } catch (error) {
+        console.error(error);
+        res.status(500).send({success: false,message :'Erreur lors de la vente'});
+    }
+})
+
+app.put("/marketplace/buy/:compte/:article", async (req,res) => {
+    const {compte,article} = req.params;
+    try {
+        const result = await pool.query("SELECT nom,marque,sousmarque,type_monnaie,nombre_monnaie FROM article WHERE id="+article)
+        const r = result.rows[0]
+        const result0 = await pool.query("SELECT effectif FROM credit_compte WHERE compte="+compte+" AND type_monnaie='"+r.type_monnaie+"'")
+        const r0 = result0.rows[0]
+        if (r0.effectif < r.nombre_monnaie){
+            res.status(403).json({success:false,message: "Pas assez d'argent pour acheter cette article"})
+        }
+        const r1 = await pool.query("UPDATE credit_compte SET effectif = effectif - "+r.nombre_monnaie+" WHERE compte="+compte+" AND type_monnaie='"+r.type_monnaie+"'")
+        const r2 = await pool.query("INSERT INTO article_achete (article,acheteur) VALUES ($1,$2) RETURNING *",[article,compte])
+        res.status(200).json({ success: true, message: "Article acheté avec succès."});
+    } catch (error) {
+        console.error(error);
+        res.status(500).send({success: false,message :"Erreur lors de l'achat"});
+    }
+})
+
 app.post("/signup",async (req,res) => {
     const { nickname,login,password,tel } = req.body;
 
@@ -363,15 +394,18 @@ app.get('/data/postgresql/:table', async (req, res) => {
             row.acheteur = acheteurResult.rows[0];
 
             // Remplacement de chasse
-            const articleResult = await pool.query('SELECT * FROM articlee WHERE id = $1', [row.article]);
+            const articleResult = await pool.query('SELECT * FROM article WHERE id = $1', [row.article]);
             row.article = articleResult.rows[0];
+
+            const vResult = await pool.query('SELECT * FROM compte WHERE id = $1', [row.article.vendeur]);
+            row.article.vendeur = acheteurResult.rows[0];
 
             return row;
         }));
 
         res.json(rowsWithRelations);
     } else if (table == "article") {
-        reqSQL ="SELECT a.id,nom,marque,sousmarque,type_monnaie,nombremonnaie,vendeur FROM article a join compte co on (vendeur = co.id)";
+        reqSQL ="SELECT a.id,nom,marque,sousmarque,type_monnaie,nombre_monnaie,vendeur FROM article a join compte co on (vendeur = co.id)";
       const result = await pool.query(reqSQL);
       const rows = result.rows;
 

@@ -88,6 +88,31 @@ body {
     font-size: 20px;
   }
 
+  .float_div {
+    font-size: 25px;
+    position: fixed;
+    transform: translate(-50%, -50%);
+    color: white;
+    background-color: #222222;
+    top: 50%;
+    left: 50%;
+    box-shadow: 0 5px 15px rgba(255, 255, 255, 0.5);
+    height: 60%;
+  }
+
+  .width_1_sur_2{
+    width:50%;
+  }
+
+  .float_right{
+    float: right;
+  }
+
+  .scroll_y_auto_0{
+    overflow-y: auto;padding: 2rem;
+  box-sizing: border-box;
+  }
+
   .nav-list {
     list-style: none;        /* Enlève les points */
     display: flex;           /* Met les <li> en ligne */

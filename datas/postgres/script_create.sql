@@ -65,7 +65,9 @@ CREATE TABLE article(
 );
 
 CREATE TABLE article_achete(
-	article INTEGER REFERENCES article,
-	acheteur INTEGER REFERENCES compte,
-	CONSTRAINT pk_achat PRIMARY KEY (article,acheteur)
+	ref BIGSERIAL PRIMARY KEY,
+	article INTEGER NOT NULL REFERENCES article,
+	acheteur INTEGER NOT NULL REFERENCES compte,
+	date_achat DATE NOT NULL DEFAULT CURRENT_DATE,
+	heure_achat TIME NOT NULL DEFAULT CURRENT_TIME
 );

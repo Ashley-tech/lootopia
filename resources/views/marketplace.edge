@@ -21,7 +21,54 @@
   </nav>
   <section class="scroll_y_auto">
     <img src="/lootopia.webp" width="170" height="170" alt="LOOTOPIA" /><br />
-    <h1>Marketplace</h1>
+    <h1>Marketplace</h1><br />
+    <div id="pros" style='font-size:25px;'>
+
+    </div>
+    <div id="bs">
+      <button class='bigbutton' onclick="ouvrir('venteform')">Vendre un article</button><br />
+      <button class='bigbutton' onclick='location.href = "/marketplace/articles"'>Tes produits achetés</button>
+    </div>
+    <div class="float_div width_1_sur_2 no_display float_right scroll_y_auto_0" id="venteform">
+      <b>Vente d'un nouveau produit</b>
+      <table>
+        <tbody>
+          <tr>
+            <th>Nom* :</th>
+            <td><input type='text' id="nomp" placeholder="Nom" /></td>
+          </tr>
+          <tr>
+            <th>Marque :</th>
+            <td><input type='text' id="mark" placeholder="Marque" /></td>
+          </tr>
+          <tr>
+            <th>Sous-marque :</th>
+            <td><input type='text' id="sousmark" placeholder="Sous-marque" /></td>
+          </tr>
+          <tr>
+            <th>Monnaie* :</th>
+            <td>
+              <select id='type'>
+                <option value=''>--</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <th>Effectif* :</th>
+            <td>
+              <input type='number' min="0" id="eff" placeholder="Effectif" />
+            </td>
+          </tr>
+          <tr class="no_display rouge" id="empty"><td colspan="2">Tous les champs avec * sont obligatoires</td></tr>
+          <tr class="no_display rouge" id="inf"><td colspan="2">L'effectif ne peut pas être négatif</td></tr>
+          <tr class="no_display rouge" id="error"><td colspan="2">Une erreur s'est produite lors de la validation</td></tr>
+          <tr>
+            <td><button class="littlebutton" id="addv">Valider</button></td>
+            <td><button class="littlebutton" onclick="fermer('venteform')">Annuler</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </section>
   <footer>
     <div class="nav-right">
@@ -35,10 +82,140 @@
       const username = Cookie.get('username')
       let userInfo = document.getElementById('user-info')
 
+      var divs = ["venteform"]
+
     if(username){
         userInfo.innerHTML = "<img src='/account.webp' class='pointer' alt='Profil' width='30' height='30' /><span>"+username+"</span><button onclick='deconnecter()' class='buttond'>Déconnexion</button>"
       } else {
+        document.getElementById("bs").style.display = "none"
         userInfo.innerHTML = "<img src='/account.webp' class='pointer' onclick='location.href = "+'"/login"'+"' alt='Profil' width='30' height='30'/><span>Se connecter</span>"
+      }
+      chargement()
+
+      async function chargement() {
+        var pros  = document.getElementById("pros")
+        var type = document.getElementById("type")
+        try {
+          const response = await fetch("http://127.0.0.1:3334/data/postgresql/article")
+          const r = await response.json()
+          if (r.length == 0){
+            pros.innerHTML = "Aucun article de trouvé<br /><br />"
+          } else {
+            for (let i = 0 ; i < r.length ; i++) {
+              const div = document.createElement('div')
+              div.innerHTML = "<div style='margin: 10px'><b><i>Article "+r[i].id+" :</i></b><br /><b style='color: cyan;'>Nom : </b>"+r[i].nom+" "
+                if (r[i].marque != "") {
+                  div.innerHTML+="<b style='color: cyan;'>Marque : </b>"+r[i].marque
+                }
+                if (r[i].sousmarque != ""){
+                  div.innerHTML+="<b style='color: cyan;'>Sous-marque : </b>"+r[i].sousmarque
+                }
+                div.innerHTML += "<br /><b style='color: cyan;'>Vendeur : </b>"+r[i].vendeur.nickname
+                div.innerHTML += "<br /><b style='color: cyan;'>Prix : </b>"+r[i].nombre_monnaie+" "+r[i].type_monnaie+"(s)"
+                if (username){
+                  div.innerHTML+="<br /><button class='littlebutton' id='buy"+r[i].id+"'>Acheter</button>"
+                }
+                div.innerHTML+="</div>"
+              pros.appendChild(div)
+              pros.innerHTML+="<hr /><br />"
+              if (username){
+                document.getElementById("buy"+r[i].id).addEventListener("click",async (e) =>  {
+                  var cot= confirm ("Veux-tu vraiment acheter l'article "+r[i].nom+" ?")
+                  if (cot){
+                    const resp = await fetch ("http://127.0.0.1:3334/data/postgresql/compte")
+                    const rep = await resp.json()
+                    const ia = rep.findIndex(obj => obj.login == username)
+                    const reponse = await fetch("http://127.0.0.1:3334/marketplace/buy/"+rep[ia].id+"/"+r[i].id,{
+                      method: "PUT",
+                      headers: {
+                        "Content-Type": "application/json"
+                      }
+                    })
+                    const resultat = await reponse.json()
+                    alert(resultat.message)
+                    if (resultat.success){
+                      location.reload()
+                    }
+                  }
+                })
+              }
+            }
+          }
+          const response0 = await fetch ("http://127.0.0.1:3334/data/mongodb/monnaie")
+          const r0 = await response0.json()
+          for (let i = 0 ; i < r0.length ; i++){
+            if (r0[i].nom != "Passe Premium"){
+              type.innerHTML+="<option value='"+r0[i].nom+"'>"+r0[i].nom+"</option>"
+            }
+          }
+        }catch (e) {
+          console.log(e)
+          pros.innerHTML = "Impossible de charger les produits"
+        }
+      }
+
+      window.fermer = function(div){
+        document.getElementById(div).style.display = "none"
+      }
+
+      document.getElementById("addv").addEventListener("click", async (e)=> {
+        e.preventDefault()
+        document.getElementById("empty").style.display = "none"
+        document.getElementById("inf").style.display = "none"
+        document.getElementById("error").style.display = "none"
+        if (document.getElementById("nomp").value == "" ||document.getElementById("type").selectedIndex == 0 || document.getElementById("eff").value == ""){
+          document.getElementById("empty").style.display = "table-cell"
+        } else if (document.getElementById("eff").value < document.getElementById("eff").min){
+          document.getElementById("inf").style.display = "table-cell"
+        } else {
+          try {
+            const resp = await fetch ("http://127.0.0.1:3334/data/postgresql/compte")
+            const rep = await resp.json()
+            const indexa = rep.findIndex(obj => obj.login == username)
+            const t = document.getElementById("type")
+            const it = t.selectedIndex
+            const vt = t.options[it].value
+            const resp0 = await fetch("http://127.0.0.1:3334/marketplace/send/"+rep[indexa].id,{
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                      nom: document.getElementById("nomp").value,
+                      marque: document.getElementById("mark").value,
+                      sousmarque: document.getElementById("sousmark").value,
+                      type:vt,
+                      effectif:document.getElementById("eff").value
+                     })
+                  }
+            )
+            alert("Vente effectué avec succès")
+            location.reload()
+                }catch (err){
+                  console.log(err)
+                  document.getElementById("error").style.display = "table-cell"
+                }
+        }
+      })
+
+      window.ouvrir = function(div){
+        document.getElementById(div).style.display = "block"
+        document.getElementById(div).scrollTop = 0
+        for (let i = 0 ; i < divs.length ; i++){
+          if (divs[i] != div){
+            fermer(divs[i])
+          }
+          if (div =="venteform"){
+            document.getElementById("eff").value = 0
+            document.getElementById("type").selectedIndex = 0
+            document.getElementById("mark").value = ""
+            document.getElementById("sousmark").value = ""
+            document.getElementById("nomp").value = ""
+            document.getElementById("empty").style.display = "none"
+            document.getElementById("inf").style.display = "none"
+            document.getElementById("error").style.display = "none"
+          }
+        }
       }
 
        window.deconnecter = function() {
