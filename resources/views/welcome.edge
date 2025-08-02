@@ -9,6 +9,7 @@
   <nav>
     <div class="nav-left">
       <ul class="nav-list">
+        <li class="pointer" onclick="location.href = '/'">Accueil</li>
        <li class="pointer" onclick="location.href = '/player'">Joueur</li>
             <li class="pointer" onclick="location.href = '/organisator'">Organisateur</li>
             <li class="pointer" onclick="location.href = '/recompenses'">Récompenses disponibles</li>
@@ -24,7 +25,7 @@
     This platform is dedicated to the participation and organization of treasure hunts. It will be based on the use of virtual and semi-virtual caches, enhanced by Augmented Reality (AR) technologies accessible via smartphones and tablets.<br/>
     The treasure hunt will be designed as a multifunctional tool: a fun medium for participants, but also a powerful communication and marketing vehicle for organizers wishing to promote their initiatives or brand.<br />
     <button class="bigbutton">Game modes</button><br />
-    <button class="bigbutton">Available flushes</button> <br />
+    <button class="bigbutton" onclick='location.href = "/player"'>Available flushes</button> <br />
     @if(!username)
       <button class="bigbutton" onclick="location.href = '/login'">Log in</button>
     @endif
