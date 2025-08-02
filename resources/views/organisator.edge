@@ -59,6 +59,15 @@
         }
       }
       const tabr = document.getElementById("chasses")
+      window.accesInfo = function(id){
+        cliquer(id)
+        location.href = "/player/"+id
+      }
+      async function cliquer(id){
+        const response = await fetch("http://127.0.0.1:3334/chasse/"+id+"/click", {
+            method: "PUT"
+          });
+      }
 
       async function chargerChasses() {
         try {
@@ -72,7 +81,7 @@
             if (c.organisateur.login == username){
               const tr = document.createElement('tr')
 
-              tr.innerHTML = "<tr><td>"+c.titre+"</td><td>"+c.monde+"</td><td>"+c.statut+"</td></tr>"
+              tr.innerHTML = "<tr><td>"+c.titre+"</td><td>"+c.monde+"</td><td>"+c.statut+"</td><td><button class='littlebutton' onclick='accesInfo("+c.id+")'>Plus d'infos</button></td></tr>"
 
               tabr.appendChild(tr)
             }
