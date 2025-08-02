@@ -8,6 +8,8 @@ npm install
 2) Pour démarrer le projet : npm start ou node server.js
 3) Pour démarrer le projet backlog : cd backlog && php -S 127.0.0.1:3332
 
+PostgreSQL :
+Créer la base de données "lootopia" et importe le script datas/postgres/script_create.sql. Les identifiants de connexion sont dans back/.env.local
 
 MongoDB :
 Créer la base de données "lootopia" avec comme collections : "cache","monnaie","plan","recompense"

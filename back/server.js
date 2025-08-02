@@ -4,17 +4,17 @@ const cors =require("cors");
 const dotenv=require("dotenv");
 const { Pool } = require('pg');
 const fs = require("fs")
-const path = require("path")
+const path = require("path");
+
+dotenv.config({ path: path.resolve(__dirname, '.env.local') });
 
 const pool = new Pool({
-  user: 'postgres',
+  user: process.env.PG_USER,
   host: '127.0.0.1',
   database: 'lootopia',
-  password: 'root',
+  password: process.env.PG_PWD,
   port: 5432,
 });
-
-dotenv.config();
 
 const app = express();
 const port = 3334;
