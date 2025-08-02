@@ -147,6 +147,17 @@ body {
   box-sizing: border-box;
 }
 
+.ban {
+  height: 100px;
+  width: 100vw;
+  overflow: hidden;
+}
+
+.ban img {
+  height: 50px;
+  width: auto;
+}
+
 .textdeconone{
   text-decoration: "none";
 }

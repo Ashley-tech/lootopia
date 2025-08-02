@@ -40,6 +40,7 @@
   import Cookie from 'https://cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.mjs'
       const username = Cookie.get('username')
       let userInfo = document.getElementById('user-info')
+      var divs = ["infos"]
 
     if(username){
         userInfo.innerHTML = "<img src='/account.webp' class='pointer' alt='Profil' width='30' height='30' /><span>"+username+"</span><button onclick='deconnecter()' class='buttond'>Déconnexion</button>"

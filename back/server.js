@@ -3,6 +3,8 @@ const {MongoClient, ObjectId} = require("mongodb");
 const cors =require("cors");
 const dotenv=require("dotenv");
 const { Pool } = require('pg');
+const fs = require("fs")
+const path = require("path")
 
 const pool = new Pool({
   user: 'postgres',
@@ -297,7 +299,7 @@ app.put("/chasse/:id/vues",async(req,res) => {
 })
 
 app.post("/chasse",async (req,res) => {
-    const { titre,description,organisateur,monde,fin,nbreparticipantsmax,montant, delai } = req.body;
+    const { titre,description,organisateur,monde,fin,nbreparticipantsmax,montant, delai,marque,banniere } = req.body;
 
     try {
         const reqSQL ="SELECT id FROM compte where login='"+organisateur+"'";
@@ -322,8 +324,8 @@ app.post("/chasse",async (req,res) => {
         console.log("datefin",fin)
 
         const result = await pool.query(
-            "INSERT INTO chasse (titre,description,organisateur,monde,datefin,nbreparticipantsmax,montant,delai,statut,datecreation,nbclicks,nbvues) VALUES ($1, $2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12) RETURNING *",
-            [titre,description,rows.id,monde,fin,nbreparticipantsmax,montant,delai,"Actif",t,0,0]
+            "INSERT INTO chasse (titre,description,organisateur,monde,datefin,nbreparticipantsmax,montant,delai,statut,datecreation,nbclicks,nbvues,brand,url_banniere) VALUES ($1, $2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING *",
+            [titre,description,rows.id,monde,fin,nbreparticipantsmax,montant,delai,"Actif",t,0,0,marque,banniere]
         );
         res.status(201).json(result.rows[0]);
     } catch (err) {
@@ -353,7 +355,7 @@ app.get('/data/postgresql/:table', async (req, res) => {
   try {
     let reqSQL;
     if (table == "chasse") {
-      reqSQL ="SELECT ch.id,titre,description,organisateur,monde,datefin,nbreparticipantsmax,montant,delai,statut,nbclicks,nbvues FROM chasse ch join compte co on (organisateur = co.id)";
+      reqSQL ="SELECT ch.id,titre,description,organisateur,monde,datefin,nbreparticipantsmax,montant,delai,statut,nbclicks,nbvues,brand,url_banniere FROM chasse ch join compte co on (organisateur = co.id)";
       const result = await pool.query(reqSQL);
       const rows = result.rows;
 
@@ -485,6 +487,44 @@ app.post("/send-email", async (req, res) => {
     const response = await sendEmail(from, to, subject, text);
     res.json(response);
 });
+
+app.use('/partenaires', express.static(path.join(__dirname, '../public/partenaires')))
+
+app.get('/partenaires/images/extensions', (req, res) => {
+  const dirPath = path.join(__dirname, '../public/partenaires')
+
+  // Vérifie si le dossier existe
+  if (!fs.existsSync(dirPath)) {
+    return res.status(404).send('Dossier non trouvé')
+  }
+
+  // Filtre les images
+  const files = fs.readdirSync(dirPath).filter(file =>
+    /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(file)
+  )
+
+  // Construit les URLs accessibles depuis le front
+  const urls = files.map(file => file)
+
+  res.json(urls)
+})
+
+app.get('/partenaires/images', (req, res) => {
+  const dirPath = path.join(__dirname, '../public/partenaires')
+
+  if (!fs.existsSync(dirPath)) {
+    return res.status(404).send('Dossier non trouvé')
+  }
+
+  const files = fs.readdirSync(dirPath).filter(file =>
+    /\.(jpg|jpeg|png|gif|webp|svg)$/i.test(file)
+  )
+
+  // Retire les extensions des noms
+  const imageNames = files.map(file => path.parse(file).name)
+
+  res.json(imageNames)
+})
 
 app.listen(port, () => {
     console.log(`Serveur backend sur http://localhost:${port}`)

@@ -21,9 +21,11 @@
     </div>
   </nav>
 
-  <section class="scroll_y_auto">
-    <img src="/lootopia.webp" width="170" height="170" alt="LOOTOPIA" />
-    <h1>Chasse n°{{id}}</h1>
+  <section id="temp" class="scroll_y_auto">
+    <div id="ban" class="relative">
+    </div>
+    <div id="logo">
+    </div>
     <table>
         <tbody>
             <tr><th>Nom :</th><td id="nom"></td></tr>
@@ -84,6 +86,22 @@
         const response = await fetch("http://127.0.0.1:3334/data/postgresql/chasse")
         const rj = await response.json()
         const index = rj.findIndex(obj => obj.id == id)
+        const resc = await fetch("http://127.0.0.1:3334/data/postgresql/compte")
+        const rc = await resc.json()
+        const indexc = rc.findIndex(obj => obj.id == rj[index].organisateur.id)
+        if (rj[index].url_banniere != "" && rj[index].url_banniere != null){
+          const sect = document.getElementById("temp");
+          sect.style.backgroundImage = "url(" + rj[index].url_banniere + ")";
+          sect.style.backgroundSize = "auto 1000px";
+          sect.style.backgroundRepeat = "no-repeat";
+          sect.style.backgroundPosition = "left center"; // ou autre selon ton besoin
+        }
+        if (rj[index].brand != "" && rj[index].brand != null){
+          document.getElementById("logo").innerHTML = "<img src='/partenaires/"+rj[index].brand+".webp' height='170' style:'width:auto;' alt='"+rj[index].brand+"' />"
+        } else {
+          document.getElementById("logo").innerHTML = "<img src='/lootopia.webp' width='170' height='170' alt='Lootopia' />"
+        }
+        document.getElementById("logo").innerHTML += '<h1>Chasse n°'+id+'</h1>'
         document.getElementById("nom").innerHTML = rj[index].titre
         document.getElementById("description").innerHTML = rj[index].description
         document.getElementById("organisateur").innerHTML = rj[index].organisateur.nickname
