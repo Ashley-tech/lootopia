@@ -28,6 +28,19 @@
     @if(!username)
       <button class="bigbutton" onclick="location.href = '/login'">Log in</button>
     @endif
+    <section class="scroll_y_auto">
+      <div class="float_div width_1_sur_2 no_display float_right scroll_y_auto_0" id="confirm_deconnect">
+      <table>
+        <tbody>
+          <tr><td colspan="2">Veux-tu vraiment te déconnecter ?</td></tr>
+          <tr>
+            <td><button class="littlebutton" onclick="deconnecter()">Oui</button></td>
+            <td><button class="littlebutton" onclick="fermer('confirm_deconnect')">Non</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    </section>
 </div>
   <footer>
     <div class="nav-right">
@@ -40,20 +53,30 @@
   import Cookie from 'https://cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.mjs'
       const username = Cookie.get('username')
       let userInfo = document.getElementById('user-info')
-      var divs = ["infos"]
+      var divs = ["confirm_deconnecter"]
 
-    if(username){
-        userInfo.innerHTML = "<img src='/account.webp' class='pointer' alt='Profil' width='30' height='30' /><span>"+username+"</span><button onclick='deconnecter()' class='buttond'>Déconnexion</button>"
+      if(username){
+        userInfo.innerHTML = "<img src='/account.webp' class='pointer' alt='Profil' width='30' height='30' /><span>"+username+'</span><button onclick="ouvrir('+"'confirm_deconnect'"+')" class="buttond">Déconnexion</button>'
       } else {
         userInfo.innerHTML = "<img src='/account.webp' class='pointer' onclick='location.href = "+'"/login"'+"' alt='Profil' width='30' height='30'/><span>Se connecter</span>"
       }
 
+      window.ouvrir = function(div){
+        document.getElementById(div).style.display = "block"
+        document.getElementById(div).scrollTop = 0
+        for (let i = 0 ; i < divs.length ; i++){
+          if (divs[i] != div){
+            fermer(divs[i])
+          }
+        }
+      }
+
+       window.fermer = function(div) {
+          document.getElementById(div).style.display = "none"
+      }
        window.deconnecter = function() {
-        var con = confirm("Are you sure ?")
-        if (con){
           Cookie.remove("username")
           location.reload()
-        }
       }
   </script>
 </body>
