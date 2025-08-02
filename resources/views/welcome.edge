@@ -9,7 +9,7 @@
   <nav>
     <div class="nav-left">
       <ul class="nav-list">
-        <li class="pointer" onclick="location.href = '/'">Accueil</li>
+        <li class="pointer" onclick="location.href = '/home'">Accueil</li>
        <li class="pointer" onclick="location.href = '/player'">Joueur</li>
             <li class="pointer" onclick="location.href = '/organisator'">Organisateur</li>
             <li class="pointer" onclick="location.href = '/recompenses'">Récompenses disponibles</li>
@@ -57,7 +57,7 @@
       var divs = ["confirm_deconnecter"]
 
       if(username){
-        userInfo.innerHTML = "<img src='/account.webp' class='pointer' alt='Profil' width='30' height='30' /><span>"+username+'</span><button onclick="ouvrir('+"'confirm_deconnect'"+')" class="buttond">Déconnexion</button>'
+        userInfo.innerHTML = "<img src='/account.webp' onclick='ouvrir("+'"info_account"'+")' class='pointer' alt='Profil' width='30' height='30' /><span>"+username+'</span><button onclick="ouvrir('+"'confirm_deconnect'"+')" class="buttond">Déconnexion</button>'
       } else {
         userInfo.innerHTML = "<img src='/account.webp' class='pointer' onclick='location.href = "+'"/login"'+"' alt='Profil' width='30' height='30'/><span>Se connecter</span>"
       }
