@@ -35,6 +35,21 @@
         </tbody>
       </table>
     </div>
+    <div class="float_div width_1_sur_2 no_display float_right scroll_y_auto_0" id="info_account">
+      <table>
+        <tbody>
+          <tr><th colspan="2">Informations</th></tr>
+          <tr><th>Nickname :</th><td id='nickname'></td></tr>
+          <tr><th>Login :</th><td id='login'></td></tr>
+          <tr><th>Password :</th><td id='password'></td></tr>
+          <tr><th>Telephone Number :</th><td id='password'></td></tr>
+          <tr>
+            <td><button class="littlebutton" onclick="location.href = 'account/modify'">Modifier</button></td>
+            <td><button class="littlebutton" onclick="fermer('info_account')">Fermer</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
     <footer>
       <div class="nav-right">
         <ul class="nav-list">
@@ -48,7 +63,7 @@
       let userInfo = document.getElementById('user-info')
 
       console.log(username)
-      var divs = ['confirm_deconnect']
+      var divs = ['confirm_deconnect',"info_account"]
 
 
 
