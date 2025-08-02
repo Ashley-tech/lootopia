@@ -13,6 +13,9 @@
 |
 */
 
+const Env = use('Env') // ✅ correct en AdonisJS 4.1
+
+
 /** @type {typeof import('@adonisjs/framework/src/Route/Manager')} */
 const Route = use('Route')
 
@@ -41,6 +44,7 @@ Route.get('/player/:chasse', async ({ params,view }) => {
 
   // Tu peux passer les valeurs à ta vue :
   return view.render('play_chasse', {
-    id
+    id,
+    googleMapsApiKey: Env.get('MAP_API_KEY'),
   })
 })
