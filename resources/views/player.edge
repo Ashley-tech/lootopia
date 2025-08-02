@@ -39,7 +39,7 @@
           <tr><th>Nickname :</th><td id='nickname'></td></tr>
           <tr><th>Login :</th><td id='login'></td></tr>
           <tr><th>Password :</th><td id='password'></td></tr>
-          <tr><th>Telephone Number :</th><td id='password'></td></tr>
+          <tr><th>Telephone Number :</th><td id='tel'></td></tr>
           <tr>
             <td><button class="littlebutton" onclick="location.href = 'account/modify'">Modifier</button></td>
             <td><button class="littlebutton" onclick="fermer('info_account')">Fermer</button></td>
@@ -71,7 +71,7 @@
       const username = Cookie.get('username')
       let userInfo = document.getElementById('user-info')
       const tabr = document.getElementById("chasses")
-      var divs = ["confirm_deconnecter","info_account"]
+      var divs = ["confirm_deconnect","info_account"]
 
     if(username){
         userInfo.innerHTML = "<img src='/account.webp' onclick='ouvrir("+'"info_account"'+")' class='pointer' alt='Profil' width='30' height='30' /><span>"+username+'</span><button onclick="ouvrir('+"'confirm_deconnect'"+')" class="buttond">Déconnexion</button>'
@@ -83,12 +83,25 @@
           Cookie.remove("username")
           location.reload()
       }
-      window.ouvrir = function(div){
+      window.ouvrir = async function(div){
         document.getElementById(div).style.display = "block"
         document.getElementById(div).scrollTop = 0
         for (let i = 0 ; i < divs.length ; i++){
           if (divs[i] != div){
             fermer(divs[i])
+          }
+          if (div == "info_account"){
+            const resp = await fetch("http://127.0.0.1:3334/data/postgresql/compte")
+            const resu = await resp.json()
+            const inu = resu.findIndex(obj => obj.login == username)
+            document.getElementById("nickname").innerHTML = resu[inu].nickname
+            document.getElementById("login").innerHTML = resu[inu].login
+            document.getElementById("tel").innerHTML = resu[inu].tel
+            let p = ""
+            for (let i = 0 ; i < resu[inu].password.length ; i++){
+              p += "*"
+            }
+            document.getElementById("password").innerHTML = p
           }
         }
       }

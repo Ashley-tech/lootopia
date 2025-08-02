@@ -88,7 +88,7 @@
           <tr><th>Nickname :</th><td id='nickname'></td></tr>
           <tr><th>Login :</th><td id='login'></td></tr>
           <tr><th>Password :</th><td id='password'></td></tr>
-          <tr><th>Telephone Number :</th><td id='password'></td></tr>
+          <tr><th>Telephone Number :</th><td id='tel'></td></tr>
           <tr>
             <td><button class="littlebutton" onclick="location.href = 'account/modify'">Modifier</button></td>
             <td><button class="littlebutton" onclick="fermer('info_account')">Fermer</button></td>
@@ -225,7 +225,7 @@
         }
       })
 
-      window.ouvrir = function(div){
+      window.ouvrir = async function(div){
         document.getElementById(div).style.display = "block"
         document.getElementById(div).scrollTop = 0
         for (let i = 0 ; i < divs.length ; i++){
@@ -241,6 +241,19 @@
             document.getElementById("empty").style.display = "none"
             document.getElementById("inf").style.display = "none"
             document.getElementById("error").style.display = "none"
+          }
+          if (div == "info_account"){
+            const resp = await fetch("http://127.0.0.1:3334/data/postgresql/compte")
+            const resu = await resp.json()
+            const inu = resu.findIndex(obj => obj.login == username)
+            document.getElementById("nickname").innerHTML = resu[inu].nickname
+            document.getElementById("login").innerHTML = resu[inu].login
+            document.getElementById("tel").innerHTML = resu[inu].tel
+            let p = ""
+            for (let i = 0 ; i < resu[inu].password.length ; i++){
+              p += "*"
+            }
+            document.getElementById("password").innerHTML = p
           }
         }
       }

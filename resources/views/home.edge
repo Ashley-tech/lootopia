@@ -73,12 +73,25 @@
         userInfo.innerHTML = "<img src='/account.webp' class='pointer' onclick='location.href = "+'"/login"'+"' alt='Profil' width='30' height='30'/><span>Se connecter</span>"
       }
 
-      window.ouvrir = function(div){
+      window.ouvrir = async function(div){
         document.getElementById(div).style.display = "block"
         document.getElementById(div).scrollTop = 0
         for (let i = 0 ; i < divs.length ; i++){
           if (divs[i] != div){
             fermer(divs[i])
+          }
+          if (div == "info_account"){
+            const resp = await fetch("http://127.0.0.1:3334/data/postgresql/compte")
+            const resu = await resp.json()
+            const inu = resu.findIndex(obj => obj.login == username)
+            document.getElementById("nickname").innerHTML = resu[inu].nickname
+            document.getElementById("login").innerHTML = resu[inu].login
+            document.getElementById("tel").innerHTML = resu[inu].tel
+            let p = ""
+            for (let i = 0 ; i < resu[inu].password.length ; i++){
+              p += "*"
+            }
+            document.getElementById("password").innerHTML = p
           }
         }
       }
