@@ -11,3 +11,20 @@ npm install
 
 MongoDB :
 Créer la base de données "lootopia" avec comme collections : "cache","monnaie","plan","recompense"
+
+API Key Map :
+Lien vidéo : https://www.youtube.com/watch?v=OY60sAsPqos
+ou
+Instructions :
+1) Aller sur le site de Google Cloud
+2) Si tu n'es pas connecté à un compte, tu peux utiliser ton compte Google.
+3) Va dans la rubrique Console
+4) Crée toi un nouveau projet en cliquant sur le bouton du nom de projet à côté du logo de Google Cloud en haut à gauche de l'écran
+5) Options (icône des 3 barres horizontales tout en haut à gauche) > API et Services > API et Services activés
+6) Clique sur le bouton "+ Activer les APIs et les services"
+7) Sélectionne Maps JavaScript API et active-le si ce n'est pas déjà fait
+8) Options > API et Services > Identifiants
+9) Clique sur le bouton "+ Créer des identifiants" > Clé API
+10) Cela t'ouvre une fenêtre et t'affiche une clé API
+11) N'oublie surtout pas de copier cette clé
+12) Définir MAP_API_KEY avec cette clé dans .env du front
