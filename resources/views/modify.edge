@@ -39,13 +39,13 @@
         <tr><th>Login* :</th><td><input type="text" placeholder="Login" id="logini" /></td></tr>
         <tr><th>Email* :</th><td><input type="text" placeholder="Email" id="meli" /></td></tr>
         <tr>
-          <th>New password* :</th>
+          <th>New password :</th>
           <td><input type="password" placeholder="Password" id="pwdi" />
             <button onclick="showPwd('pwdi')">Display password</button>
           </td>
         </tr>
         <tr>
-          <th>New password (to reconfirm)* :</th>
+          <th>New password (to reconfirm) :</th>
           <td><input type="password" placeholder="Password" id="pwdf" />
             <button onclick="showPwd('pwdf')">Display password</button>
           </td>
@@ -54,11 +54,13 @@
 
         <!-- Error messages -->
         <tr><td colspan="2" class="no_display rouge" id="empty">Les champs avec * ne peuvent pas être vides</td></tr>
-        <tr><td colspan="2" class="no_display rouge" id="meme">Un compte possède déjà soit le login tu as saisi ou soit l'adresse email que tu as saisi. Merci de réessayer</td></tr>
+        <tr><td colspan="2" class="no_display rouge" id="memn">Un compte possède déjà le login tu as saisi. Merci de réessayer</td></tr>
+        <tr><td colspan="2" class="no_display rouge" id="meme">Un compte possède déjà l'adresse email' tu as saisi. Merci de réessayer</td></tr>
         <tr><td colspan="2" class="no_display rouge" id="incorrecte">L'email ne respecte pas la norme classique</td></tr>
         <tr><td colspan="2" class="no_display rouge" id="diffp">Les mots de passes sont différents</td></tr>
         <tr><td colspan="2" class="no_display rouge" id="incorrectp">Le mot de passe ne respecte pas l'expression régulière ci-dessus.</td></tr>
         <tr><td colspan="2" class="no_display rouge" id="erreur">Une erreur s'est produite.</td></tr>
+        <tr><td colspan="2" class="no_display vert" id="modifsucces">Modification réussie.</td></tr>
 
         <tr>
           <td><button class="bigbutton" id="sign">Valider les modifications</button></td>
@@ -104,6 +106,111 @@
       window.deconnecter = function(){
         Cookie.remove("username")
         location.href = "/"
+      }
+
+      document.getElementById("sign").addEventListener("click", async (e) => {
+        e.preventDefault();
+        document.getElementById("empty").style.display = "none"
+        document.getElementById("memn").style.display = "none"
+        document.getElementById("meme").style.display = "none"
+        document.getElementById("incorrecte").style.display = "none"
+        document.getElementById("diffp").style.display = "none"
+        document.getElementById("incorrectp").style.display = "none"
+        document.getElementById("erreur").style.display = "none"
+        document.getElementById("modifsucces").style.display = "none"
+        if (document.getElementById("logini").value == "" ||document.getElementById("meli").value == ""){
+          document.getElementById("empty").style.display = "table-cell"
+        } else {
+          const response = await fetch("http://127.0.0.1:3334/data/postgresql/compte")
+          const resultat = await response.json()
+          const indexu = resultat.findIndex(obj => obj.login == username)
+          let nick_detecte = false
+          let mel_detecte = false
+          for (let i = 0 ; i < resultat.length ; i++){
+            if (document.getElementById("logini").value != resultat[indexu].nickname && document.getElementById("logini").value == resultat[i].nickname){
+              nick_detecte = true;
+              break;
+            }
+          }
+          if (nick_detecte == true){
+            document.getElementById("memn").style.display = "table-cell"
+          } else {
+            for (let i = 0 ; i < resultat.length ; i++){
+              if (document.getElementById("meli").value != resultat[indexu].login && document.getElementById("meli").value == resultat[i].login){
+                melk_detecte = true;
+                break;
+              }
+            }
+            if (mel_detecte == true){
+              document.getElementById("meme").style.displae = "table-cell"
+            } else {
+              const regexPwd = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+              const regexEmail = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+              if (!checkRE(regexEmail,document.getElementById("meli").value)){
+                document.getElementById("incorrecte").style.display = "table-cell"
+              } else if (document.getElementById("pwdi").value != document.getElementById("pwdf").value){
+                document.getElementById("diffp").style.display = "table-cell"
+              //} else if (!checkRE(regexPwd, pwdi)) {
+                //document.getElementById("incorrectp").style.display = "table-cell";
+              }else{
+                try{
+                  let pass;
+                  if (document.getElementById("pwdi").value == ""){
+                    pass = resultat[indexu].password
+                  } else {
+                    pass = document.getElementById("pwdi").value
+                  }
+                  const respon = await fetch("http://127.0.0.1:3334/modify/"+resultat[indexu].id,{
+                    method: "PUT",
+                    headers: {
+                      "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                      nickname:document.getElementById("logini").value,login:document.getElementById("meli").value,password:pass,tel:document.getElementById("telt").value
+                    })
+                  })
+                  const rat = await respon.json()
+                  let p = ""
+                  for (let i = 0; i < pass.length ; i++){
+                    p+='*'
+                  }
+                  const from = "no-reply@lootopia.com"
+                  const to = document.getElementById("meli").value
+                  const subject = "Confirmtion de modification";
+                  let login = document.getElementById("logini").value;
+                  let password = document.getElementById("pwdi").value;
+                  let texte = "Salut,<br /><br />Un compte a été modifié et touche ton adresse mail. Voici le login concerné "+document.getElementById("logini").value+" <br /><br />Mot de passe : "+p+" <br /><br />Passe de bons moments. <br /><br />Lootopia";
+                  if (rat.success){
+                    const response2 = await fetch("http://localhost:3334/send-email", {
+                      method: "POST",
+                      headers: {
+                        "Content-Type": "application/json"
+                      },
+                      body: JSON.stringify({ from,to,subject,text:texte})
+                    });
+
+                    const result2 = await response2.json();
+                    console.log(result2)
+                    if (result2.success == false){
+                      alert("Nous n'avons pas pu envoyer de mail")
+                    }
+                    document.getElementById("modifsucces").style.display = "table-cell"
+                    location.href = "/signup/success?login="+document.getElementById("logini").value+"&mdp="+p
+                  } else {
+                    document.getElementById("erreur").style.display = "table-cell"
+                  }
+                } catch (error){
+                  console.log(error)
+                  document.getElementById("erreur").style.display = "table-cell"
+                }
+              }
+            }
+          }
+        }
+      })
+
+      function checkRE(regex, str) {
+        return regex.test(str);
       }
 
       async function chargement(){

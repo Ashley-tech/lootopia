@@ -193,6 +193,23 @@ app.post("/signup",async (req,res) => {
     }
 })
 
+app.put("/modify/:acc", async (req, res) => {
+    const{acc} = req.params
+    const {nickname,login,password,tel} = req.body;
+    try{
+        const saltRounds = 10;
+        const hash = await bcrypt.hash(password, saltRounds);
+
+        const result = await pool.query(
+            "UPDATE compte SET nickname = '"+nickname+"', login = '"+login+"', password = '"+password+"', password_crypted='"+hash+"', tel='"+tel+"' WHERE id = "+acc+" RETURNING *"
+        );
+        res.status(200).send({success: true,message :'Modification du compte réussie'});
+    }catch (error){
+        console.error(error);
+        res.status(500).send({success: false,message :'Erreur lors de la modification du compte'});
+    }
+})
+
 app.put("/shop/pay/:compte", async (req, res) => {
     const { monnaie, effectif,code16,datefin,code3 } = req.body;
     const {compte} = req.params;
