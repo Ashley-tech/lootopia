@@ -316,7 +316,7 @@ app.put("/chasse/:id/vues",async(req,res) => {
 })
 
 app.post("/chasse",async (req,res) => {
-    const { titre,description,organisateur,monde,fin,nbreparticipantsmax,montant, delai,marque,banniere } = req.body;
+    const { titre,description,organisateur,monde,fin,nbreparticipantsmax,montant, delai,marque,banniere,latitude,longitude } = req.body;
 
     try {
         const reqSQL ="SELECT id FROM compte where login='"+organisateur+"'";
@@ -341,8 +341,8 @@ app.post("/chasse",async (req,res) => {
         console.log("datefin",fin)
 
         const result = await pool.query(
-            "INSERT INTO chasse (titre,description,organisateur,monde,datefin,nbreparticipantsmax,montant,delai,statut,datecreation,nbclicks,nbvues,brand,url_banniere) VALUES ($1, $2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14) RETURNING *",
-            [titre,description,rows.id,monde,fin,nbreparticipantsmax,montant,delai,"Actif",t,0,0,marque,banniere]
+            "INSERT INTO chasse (titre,description,organisateur,monde,datefin,nbreparticipantsmax,montant,delai,statut,datecreation,nbclicks,nbvues,brand,url_banniere,latitude,longitude) VALUES ($1, $2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16) RETURNING *",
+            [titre,description,rows.id,monde,fin,nbreparticipantsmax,montant,delai,"Actif",t,0,0,marque,banniere,latitude,longitude]
         );
         res.status(201).json(result.rows[0]);
     } catch (err) {
@@ -372,7 +372,7 @@ app.get('/data/postgresql/:table', async (req, res) => {
   try {
     let reqSQL;
     if (table == "chasse") {
-      reqSQL ="SELECT ch.id,titre,description,organisateur,monde,datefin,nbreparticipantsmax,montant,delai,statut,nbclicks,nbvues,brand,url_banniere FROM chasse ch join compte co on (organisateur = co.id)";
+      reqSQL ="SELECT ch.id,titre,description,organisateur,monde,datefin,nbreparticipantsmax,montant,delai,statut,nbclicks,nbvues,brand,url_banniere,latitude,longitude FROM chasse ch join compte co on (organisateur = co.id)";
       const result = await pool.query(reqSQL);
       const rows = result.rows;
 

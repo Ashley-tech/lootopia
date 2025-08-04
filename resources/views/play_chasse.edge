@@ -133,16 +133,39 @@
           });
       }
 
-      function initMap() {
-        const location = { lat: 48.8566, lng: 2.3522 } // Paris
+      window.initMap = async function(){
+        const resp = await fetch("http://127.0.0.1:3334/data/postgresql/chasse")
+        const resu = await resp.json()
+        const index = resu.findIndex(obj => obj.id == id)
+        return resu[index].latitude
+      }
+
+      async function getLongitude(){
+        const resp = await fetch("http://127.0.0.1:3334/data/postgresql/chasse")
+        const resu = await resp.json()
+        const index = resu.findIndex(obj => obj.id == id)
+        return resu[index].longitude
+      }
+
+      async function initMap() {
+        let p = await chasse()
+        console.log(p)
+        const location = { lat: p.latitude, lng: p.longitude } // Paris
         const map = new google.maps.Map(document.getElementById("map"), {
-          zoom: 12,
+          zoom: 13,
           center: location,
         })
         new google.maps.Marker({
-          //position: location,
+          position: location,
           map: map,
         })
+      }
+
+      async function chasse(){
+        const response = await fetch("http://127.0.0.1:3334/data/postgresql/chasse")
+        const rj = await response.json()
+        const index = rj.findIndex(obj => obj.id == id)
+        return rj[index]
       }
 
       async function chargement(){

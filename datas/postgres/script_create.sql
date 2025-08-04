@@ -21,6 +21,8 @@ CREATE table chasse(
 	brand VARCHAR(56),
 	url_banniere VARCHAR(5000),
 	delai INTEGER,
+	latitude FLOAT NOT NULL DEFAULT 0 CHECK (lattitude >= -90 AND lattitude <= 90),
+	longitude FLOAT NOT NULL DEFAULT 0 CHECK (longitude >= -180 AND longitude <= 180 ),
 	statut VARCHAR(15) NOT NULL,
 	nbclicks INTEGER NOT NULL DEFAULT 0,
 	nbvues INTEGER NOT NULL DEFAULT 0,
