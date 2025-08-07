@@ -30,3 +30,11 @@ Instructions :
 10) Cela t'ouvre une fenêtre et t'affiche une clé API
 11) N'oublie surtout pas de copier cette clé
 12) Définir MAP_API_KEY avec cette clé dans .env du front
+
+Stripe :
+1) Se connecter à Stripe
+2) Dans la barre latéral gauche, "Développeurs" -> "Clés API" -> Récupérer la clé secret 'sk_test_...' et la clé publique 'pk_test_...' pour les affecter à process.env.STRIPE_SECRET_KEY et process.env.STRIPE_PUBLISHABLE_KEY
+3) Ensuite, aller sur https://stripe.com/docs/stripe-cli pour télcharger Stripe CLI
+4) stripe login -> Une clé spécifique pour ton ordinateur sera générée
+5) stripe listen --forward-to [hote]:[port]/webhook
+6) Une clé commencant par 'whsec...' est générée et affecte le à process.env.STRIPE_WEBHOOK_SECRET

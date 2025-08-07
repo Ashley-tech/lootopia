@@ -344,13 +344,13 @@ app.put("/data/mongodb/:collection/:id", async (req, res) => {
     }
 });
 
-app.post("/inscription/:participant/:chasse",async (req,res) => {
+app.get("/inscription/:participant/:chasse",async (req,res) => {
     const {participant,chasse} = req.params
     try {
-
+        const result = await pool.query("INSERT INTO participation (joueur,chasse) VALUES ($1,$2) RETURNING *",[participant,chasse]);
+        res.status(201).json({succes:true,message:"Inscription réussie"})
     } catch (e) {
-        console.error(err);
-        res.status(500).send('Erreur lors de l\'inscription');
+        res.status(500).json({succes:false,message:"Inscription échouée : "+e})
     }
 })
 

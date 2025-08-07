@@ -33,7 +33,7 @@
           <tr><th>Date de fin :</th><td><input type="date" id="df"/></td></tr>
           <tr><th>Nombre maximum de participants* :</th><td><input type="number" id="nbremax" min="2" /></td></tr>
           <tr><th>Délai (en jours)* :</th><td><input type="number" id="delaij" min="1" /></td></tr>
-          <tr><th>Montant* :</th><td><input type="number" id="montant" step="0.01" min="0" /></td></tr>
+          <tr><th>Montant (0 ou à partir de 0,50 €)* :</th><td><input type="number" id="montant" step="0.01" min="0" /></td></tr>
           <tr><th>Latitude* :</th><td><input type="number" id="latitude" step="0.000001" min="-90" max="90" value="0" /></td></tr>
           <tr><th>Longitude* :</th><td><input type="number" id="longitude" step="0.000001" min="-180" max="180" value="0" /></td></tr>
           <tr id="marv" class="no_display"><th>Marque* :</th><td><select id="marn"><option value=''>Pas de marque</option></select></td></tr>
@@ -42,7 +42,7 @@
           <tr id="dfv" class="no_display rouge"><td colspan="2">La date de fin saisi n'est pas valide.</td></tr>
           <tr id="horslat" class="no_display rouge"><td colspan="2">La latitude doit être compris entre -90 et 90</td></tr>
           <tr id="horslong" class="no_display rouge"><td colspan="2">La longitude doit être compris entre -180 et 180</td></tr>
-          <tr id="inf" class="no_display rouge"><td colspan="2">Le nombre maximum de participant ne doit pas être inférieur à 2. Le délai ne peut pas être inférieur à 1. Le montant ne doit pas être négatif.</td></tr>
+          <tr id="inf" class="no_display rouge"><td colspan="2">Le nombre maximum de participant ne doit pas être inférieur à 2. Le délai ne peut pas être inférieur à 1. Le montant ne peut être soit nul, ou soit supérieur ou égal à 0,50€.</td></tr>
           <tr id="error" class="no_display rouge"><td colspan="2">Une erreur s'est produite lors de l'ajout de la chasse</td></tr>
           <tr id="succes" class="no_display vert"><td colspan="2">Chasse ajouté avec succès</td></tr>
           <tr id="iu" class="no_display rouge"><td colspan="2">L'URL saisi est incorrect. Il doit commencer par http:// ou https://</td></tr>
@@ -167,7 +167,7 @@
               document.getElementById("empty").style.display = "table-cell"
             } else if (document.getElementById("df").value != "" && dv <= date) {
               document.getElementById("dfv").style.display = "table-cell"
-            } else if (parseInt(document.getElementById("nbremax").value) < 2 ||parseInt(document.getElementById("delaij").value) < 1 || parseFloat(document.getElementById("montant").value) < 0.00){
+            } else if (parseInt(document.getElementById("nbremax").value) < 2 ||parseInt(document.getElementById("delaij").value) < 1 || parseFloat(document.getElementById("montant").value) < 0.00 || (parseFloat(document.getElementById("montant").value) > 0.00 && parseFloat(document.getElementById("montant").value) < 0.5)){
               document.getElementById("inf").style.display = "table-cell"
             } else if (parseInt(document.getElementById("latitude").value) < -90 ||parseInt(document.getElementById("latitude").value) > 90){
               document.getElementById("horslat").style.display="table-cell"

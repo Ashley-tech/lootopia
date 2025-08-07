@@ -65,7 +65,6 @@
             <tr><th>Statut :</th><td id="statut"></td></tr>
             <tr><th>Nombre de participants inscrits :</th><td id="participants"></td></tr>
             <tr><th>Nombre de vues :</th><td id="vues"></td></tr>
-            <tr><td id="bj"></td><td></td></tr>
         </tbody>
     </table>
     <div id="map"></div>
@@ -80,11 +79,14 @@
       </ul>
     </div>
   </footer>
+  <script src="https://js.stripe.com/v3/"></script>
   <script>
     const id = {{ id }};
     </script>
     <script type="module">
         import Cookie from 'https://cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.mjs'
+      
+
       const username = Cookie.get('username')
       let userInfo = document.getElementById('user-info')
       var divs = ["confirm_deconnect","info_account"]
@@ -133,7 +135,7 @@
           });
       }
 
-      window.initMap = async function(){
+      async function getLatitude(){
         const resp = await fetch("http://127.0.0.1:3334/data/postgresql/chasse")
         const resu = await resp.json()
         const index = resu.findIndex(obj => obj.id == id)
@@ -150,16 +152,19 @@
       async function initMap() {
         let p = await chasse()
         console.log(p)
-        const location = { lat: p.latitude, lng: p.longitude } // Paris
+
+        const location = { lat: p.latitude, lng: p.longitude }
         const map = new google.maps.Map(document.getElementById("map"), {
           zoom: 13,
           center: location,
         })
+
         new google.maps.Marker({
           position: location,
           map: map,
         })
       }
+
 
       async function chasse(){
         const response = await fetch("http://127.0.0.1:3334/data/postgresql/chasse")
@@ -179,6 +184,7 @@
         const resc = await fetch("http://127.0.0.1:3334/data/postgresql/compte")
         const rc = await resc.json()
         const indexc = rc.findIndex(obj => obj.id == rj[index].organisateur.id)
+        const indexu = rc.findIndex(obj => obj.login == username)
         if (rj[index].url_banniere != "" && rj[index].url_banniere != null){
           const sect = document.getElementById("temp");
           sect.style.backgroundImage = "url(" + rj[index].url_banniere + ")";
@@ -201,11 +207,86 @@
         document.getElementById("places").innerHTML = rj[index].nbreparticipantsmax - nb.nombre
         document.getElementById("statut").innerHTML = rj[index].statut
         document.getElementById("vues").innerHTML = rj[index].nbvues
+        const response1 = await fetch("http://127.0.0.1:3334/data/postgresql/compte")
+        const result1 = await response1.json()
+        const index1 = result1.findIndex(obj => obj.login == username)
+        const response0 = await fetch("http://127.0.0.1:3334/data/postgresql/participation")
+        const result0 = await response0.json()
+        const index0 = result0.findIndex(obj => obj.chasse.id == id && obj.joueur.id == result1[index1].id)
+        if (rj[index].statut == "Actif"){
+          if (index0 == -1 && rj[index].nbreparticipantsmax - nb.nombre != 0 && indexc != indexu){
+            if (rj[index].montant <0.5){
+              document.getElementById("bj").innerHTML = "<button id='inscription' class='bigbutton'>S'inscrire</button>"
+              document.getElementById("inscription").addEventListener("click", async () => {
+                var conf = confirm("Es-tu sûr de vouloir t'inscrire à cette chasse ?")
+                if (!conf) {
+                  console.log("inscription")
+                  const response2 = await fetch("http://127.0.0.1:3334/inscription/"+result1[index1].id+"/"+id);
+                  const result2 = await response2.json();
+                  if (result2.success) {
+                    alert("Inscription réussie !");
+                    location.reload();
+                  } else {
+                    alert("Erreur lors de l'inscription : " + result2.message);
+                  }
+                }
+              })
+            } else {
+              document.getElementById("bj").innerHTML = "<br /><br /><div id='card-element' cl style='margin-bottom: 10px;'></div><div id='card-errors' class='red' style='margin-bottom: 10px;'></div><button id='payer' class='bigbutton'>Payer</button>"
+              
+          const stripe = Stripe('pk_test_51RbljMGKnjvSr5TJYgsFywCZ3vGQhXHMXEKBdHfyuqUlde4UwN30c64XJ0B8opgNKotlhqYideBL27jMe9Tx5DJU00ELFT02BL'); // clé publique
+      const elements = stripe.elements();
+      const cardElement = elements.create("card");
+              cardElement.mount("#card-element");
+              cardElement.on("change", (event) => {
+                const errorDiv = document.getElementById("card-errors");
+                if (event.error) {
+                  errorDiv.textContent = event.error.message;
+                } else {
+                  errorDiv.textContent = "";
+                }
+              });
+              document.getElementById("payer").addEventListener("click", async () => {
+                const confirmMsg = "Es-tu sûr de vouloir valider le paiement de "+rj[index].montant+" € pour t'inscrire ?";
+                if (!confirm(confirmMsg)) return;
+
+                try {
+                  const paymentIntentRes = await fetch('http://127.0.0.1:3334/create-payment-intent', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ amount: rj[index].montant * 100, currency: 'eur' })
+                  });
+
+                  const { clientSecret } = await paymentIntentRes.json();
+                  console.log("🎯 clientSecret reçu :", clientSecret);
+
+
+                  const result = await stripe.confirmCardPayment(clientSecret, {
+                    payment_method: {
+                      card: cardElement,
+                      billing_details: { name: username }
+                    }
+                  });
+
+                  if (result.error) {
+                    alert("Erreur : " + result.error.message);
+                  } else if (result.paymentIntent.status === 'succeeded') {
+                    const responsepayi = await fetch("http://127.0.0.1:3334/inscription/"+result1[index1].id+"/"+id);
+                    const resultp = await responsepayi.json();
+                    alert("✅ Paiement réussi ! Tu es donc bien inscrit à la chasse !");
+                    location.reload();
+                  }
+                }catch (error){
+                  alert(error)
+                }
+              })
+            }
+          } else {
+            document.getElementById("bj").innerHTML = "<button class='bigbutton'>Jouer</button>"
+          } 
+        }
       }
-      /*document.getElementById("valid").addEventListener("click", async (e) => {
-            e.preventDefault();
-            
-      })*/
+
     </script>
     <script
       async

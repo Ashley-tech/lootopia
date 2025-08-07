@@ -128,7 +128,7 @@
 
           // Génération dynamique des lignes
           chasses.forEach(c => {
-            if (c.organisateur.login == username){
+            if (c.statut == "Actif"){
               const tr = document.createElement('tr')
 
               tr.innerHTML = "<tr><td>"+c.titre+"</td><td>"+c.monde+"</td><td>"+c.montant+" €</td><td><button class='littlebutton' onclick='accesInfo("+c.id+")'>Plus d'infos</button></td></tr>"
