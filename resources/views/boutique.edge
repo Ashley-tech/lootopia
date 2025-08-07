@@ -60,8 +60,13 @@
       </ul>
   </div>
 </footer>
+<script src="https://js.stripe.com/v3/"></script>
 <script type="module">
   import Cookie from 'https://cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.mjs'
+  const stripe = Stripe('pk_test_51RbljMGKnjvSr5TJYgsFywCZ3vGQhXHMXEKBdHfyuqUlde4UwN30c64XJ0B8opgNKotlhqYideBL27jMe9Tx5DJU00ELFT02BL'); // clé publique
+  const elements = stripe.elements();
+let cardElements = [];
+
       const username = Cookie.get('username')
       let userInfo = document.getElementById('user-info')
 
@@ -71,75 +76,117 @@
 
       chargement()
 
-      async function chargement(){
-        const repon = await fetch("http://127.0.0.1:3334/data/postgresql/compte")
-        const r = await repon.json()
-        const inr = r.findIndex(obj => obj.login == username)
-        const compteId = r[inr].id
-        const response = await fetch("http://127.0.0.1:3334/data/mongodb/monnaie")
-        const res = await response.json()
-        for (let i = 0 ;i < res.length ; i++) {
-              const div = document.createElement('div')
+      async function chargement() {
+  const repon = await fetch("http://127.0.0.1:3334/data/postgresql/compte");
+  const r = await repon.json();
+  const inr = r.findIndex(obj => obj.login == username);
+  const compteId = r[inr].id;
 
-              div.innerHTML = "<div style='margin: 20px 0; display: flex; align-items: center; gap: 10px;'><img src='/recompense/Monnaie virtuelle/"+res[i].nom+".webp' height='150' width='150' /><div style='display: flex; flex-direction: column; gap: 5px;'><span style='font-size: 24px;'>"+res[i].nom+"</span><span><b>Montant à l'unité : </b>"+res[i].montant+" €</span>"
-                if (username){
-                  div.innerHTML +="<input type='number' min='1' id='eff"+i+"' value='1' /><button id='b"+i+"'>Acheter</button>"
-                }
-                div.innerHTML +="<br /><div class='no_display' id='dc"+i+"'><input type='text' placeholder='16 chiffres' id='16_"+i+"' /><input type='month' placeholder='Fin de validité (MM/AA)' id='fin_"+i+"' /><input type='text' placeholder='3 chiffres au dos' id='3_"+i+"' /><button id='v"+i+"'>Payer</button><button id='a"+i+"'>Annuler</button></div></div>"
+  const response = await fetch("http://127.0.0.1:3334/data/mongodb/monnaie");
+  const res = await response.json();
 
-              moneys.appendChild(div)
-              moneys.appendChild(document.createElement('hr'));
-
-
-              document.getElementById("b"+i).addEventListener("click",async (e) =>  {
-                if (document.getElementById("eff"+i).value != null && document.getElementById("eff"+i).value >= document.getElementById("eff"+i).min){
-                  document.getElementById("dc"+i).style.display = "block"
-                  document.getElementById("eff"+i).disabled = true
-                  document.getElementById("16_"+i).value = ""
-                  document.getElementById("3_"+i).value = ""
-                  document.getElementById("fin_"+i).value = ""
-                  document.getElementById("v"+i).innerHTML = "Payer "+(document.getElementById("eff"+i).value * res[i].montant)+"€"
-                } else {
-                  alert("Malheureusement, tu ne peux pas payer la monnaie "+res[i].nom+" car l'effectif' saisi est inférieur à 1 ou est vide")
-                }
-              })
-              document.getElementById("a"+i).addEventListener("click",async (e) =>  {
-                document.getElementById("dc"+i).style.display = "none"
-                document.getElementById("eff"+i).disabled = false
-              })
-              document.getElementById("v"+i).addEventListener("click",async (e) =>  {
-                if (document.getElementById("16_"+i).value == "" || document.getElementById("3_"+i).value == "" || document.getElementById("fin_"+i).value == ""){
-                  alert("Tous les champs sont obligatoires")
-                } else if (document.getElementById("16_"+i).value.length != 16){
-                  alert("Ton code doit comporter 16 chiffres (tu as saisi "+document.getElementById("16_"+i).value.length+" chiffres)")
-                } else if (document.getElementById("3_"+i).value.length != 3){
-                  alert("Ton code doit comporter 3 chiffres (tu as saisi "+document.getElementById("3_"+i).value.length+" chiffres)")
-                } else {
-                  var con = confirm("Es-tu sur de vouloir payer "+document.getElementById("eff"+i).value+" "+res[i].nom.toLowerCase()+"(s) (soit le prix total de "+(document.getElementById("eff"+i).value * res[i].montant)+" € ?")
-                  if (con){
-                    try {
-                      const responseP = await fetch("http://127.0.0.1:3334/shop/pay/"+compteId
-                        , {
-                          method: "PUT",
-                          headers: { "Content-Type": "application/json" },
-                          body: JSON.stringify({ monnaie : res[i].nom,effectif:document.getElementById("eff"+i).value,code16:document.getElementById("16_"+i).value,code3:document.getElementById("3_"+i).value,datefin:document.getElementById("fin_"+i).value.toString()})
-                        }
-                      )
-                      const rp = await responseP.json()
-                      if (rp.success){
-                        alert("Paiement effectué avec succès")
-                        location.reload()
-                      } else {
-                        alert(rp.message)
-                      }
-                    }catch (error){
-                      alert("Echec de paiement : "+error)
-                    }
-                  }
-                }
-              })
-          }
+  for (let i = 0; i < res.length; i++) {
+    const div = document.createElement('div');
+    div.innerHTML = "<div style='margin: 20px 0; display: flex; align-items: center; gap: 10px;'><img src='/recompense/Monnaie virtuelle/"+res[i].nom+".webp' height='150' width='150' /><div style='display: flex; flex-direction: column; gap: 5px;'><span style='font-size: 24px;'>"+res[i].nom+"</span><span><b>Montant à l'unité : </b>"+res[i].montant+" €</span>"
+      if (username){
+        div.innerHTML += "<input type='number' min='1' id='eff"+i+"' value='1' /><button id='b"+i+"'>Acheter</button>"
       }
+          div.innerHTML += "<br /><div class='no_display' id='dc"+i+"'></div></div></div>";
+
+    moneys.appendChild(div);
+    moneys.appendChild(document.createElement('hr'));
+
+    if (username) {
+      // ➕ Ajouter les champs dynamiquement dans le bloc paiement
+      const container = document.getElementById("dc" + i);
+
+      container.innerHTML = "<div id='card-element-"+i+"' style='margin-bottom: 10px;'></div><div id='card-errors-"+i+"' class='red' style='margin-bottom: 10px;'></div><button id='v"+i+"'>Payer</button><button id='a"+i+"'>Annuler</button>";
+
+      const elements = stripe.elements();
+      const cardElement = elements.create("card");
+      cardElement.mount("#card-element-"+i);
+      cardElements[i] = cardElement;
+
+      cardElement.on("change", (event) => {
+        const errorDiv = document.getElementById("card-errors-" + i);
+        if (event.error) {
+          errorDiv.textContent = event.error.message;
+        } else {
+          errorDiv.textContent = "";
+        }
+      });
+
+      // 🎯 Click sur "Acheter"
+      document.getElementById("b" + i).addEventListener("click", () => {
+        const eff = document.getElementById("eff" + i);
+        if (eff.value && eff.value >= eff.min) {
+          container.style.display = "block";
+          eff.disabled = true;
+          document.getElementById("v" + i).innerHTML = "Payer "+(eff.value * res[i].montant) + "€";
+        } else {
+          alert("Tu dois saisir un effectif supérieur ou égal à 1 pour "+res[i].nom);
+        }
+      });
+
+      // ❌ Click sur "Annuler"
+      document.getElementById("a" + i).addEventListener("click", () => {
+        document.getElementById("dc" + i).style.display = "none";
+        document.getElementById("eff" + i).disabled = false;
+      });
+
+      // ✅ Click sur "Payer"
+      document.getElementById("v" + i).addEventListener("click", async () => {
+        const eff = document.getElementById("eff" + i).value;
+
+        const confirmMsg = "Es-tu sûr de vouloir payer "+eff+" "+res[i].nom.toLowerCase()+"(s) pour un total de "+(eff * res[i].montant)+" € ?";
+        if (!confirm(confirmMsg)) return;
+
+        try {
+          const paymentIntentRes = await fetch('http://127.0.0.1:3334/create-payment-intent', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ amount: eff * res[i].montant * 100, currency: 'eur' })
+          });
+
+          const { clientSecret } = await paymentIntentRes.json();
+
+          const result = await stripe.confirmCardPayment(clientSecret, {
+            payment_method: {
+              card: cardElements[i],
+              billing_details: { name: 'Jean Dupont' }
+            }
+          });
+
+          if (result.error) {
+            alert("Erreur : " + result.error.message);
+          } else if (result.paymentIntent.status === 'succeeded') {
+            alert("✅ Paiement réussi !");
+            // Tu peux envoyer l’achat au backend ici :
+            const responseP = await fetch("http://127.0.0.1:3334/shop/pay/"+compteId, {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                monnaie: res[i].nom,
+                effectif: eff
+              })
+            });
+
+            const rp = await responseP.json();
+            if (rp.success) {
+              alert("Monnaie ajoutée !");
+              location.reload();
+            } else {
+              alert(rp.message);
+            }
+          }
+        } catch (error) {
+          alert("Erreur de paiement : " + error);
+        }
+      });
+    }
+  }
+}
+
 
     if(username){
         userInfo.innerHTML = "<img src='/account.webp' onclick='ouvrir("+'"info_account"'+")' class='pointer' alt='Profil' width='30' height='30' /><span>"+username+'</span><button onclick="ouvrir('+"'confirm_deconnect'"+')" class="buttond">Déconnexion</button>'

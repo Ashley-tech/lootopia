@@ -5,6 +5,7 @@ const dotenv=require("dotenv");
 const { Pool } = require('pg');
 const fs = require("fs")
 const path = require("path");
+const Stripe = require('stripe');
 
 dotenv.config({ path: path.resolve(__dirname, '.env.local') });
 
@@ -17,11 +18,18 @@ const pool = new Pool({
 });
 
 const app = express();
+const stripe = Stripe(process.env.STRIPE_SECRET_KEY)
 const port = 3334;
 const mongoUri = "mongodb://127.0.0.1:27017";
 const bcrypt = require('bcrypt');
 
-app.use(express.json());
+app.use((req, res, next) => {
+  if (req.originalUrl === '/webhook') {
+    next(); // Ne pas parser en JSON ici
+  } else {
+    express.json()(req, res, next); // OK pour les autres routes
+  }
+});
 app.use(cors());
 
 const client = new MongoClient(mongoUri);
@@ -36,6 +44,59 @@ async function connecter() {
 }
 
 connecter();
+
+app.post('/webhook', express.raw({ type: 'application/json' }), (req, res) => {
+  const sig = req.headers['stripe-signature'];
+  let event;
+
+  try {
+    event = stripe.webhooks.constructEvent(
+      req.body,
+      sig,
+      process.env.STRIPE_WEBHOOK_SECRET
+    );
+  } catch (err) {
+    console.error('Erreur de signature webhook', err.message);
+    return res.status(400).send(`Webhook Error: ${err.message}`);
+  }
+
+  // ✅ Gérer les événements ici
+  switch (event.type) {
+    case 'payment_intent.succeeded':
+      const paymentIntent = event.data.object;
+      console.log('💰 Paiement réussi :', paymentIntent.id);
+      // -> Mettre à jour ta BDD, envoyer un email, etc.
+      break;
+    case 'payment_intent.payment_failed':
+      const failedIntent = event.data.object;
+      console.log('❌ Paiement échoué :', failedIntent.last_payment_error.message);
+      break;
+    // ... ajoute d’autres cas si besoin
+    default:
+      console.log(`📬 Événement non géré : ${event.type}`);
+  }
+
+  res.status(200).send(); // Stripe attend un 200 OK
+});
+
+app.post('/create-payment-intent', async (req, res) => {
+  try {
+    const { amount, currency } = req.body;
+
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount, // en centimes, par exemple 1099 = 10.99 €
+      currency,
+    });
+
+    res.send({
+      clientSecret: paymentIntent.client_secret,
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 
 app.get("/data/mongodb/:collection",
     async (req,res) => {
@@ -211,7 +272,7 @@ app.put("/modify/:acc", async (req, res) => {
 })
 
 app.put("/shop/pay/:compte", async (req, res) => {
-    const { monnaie, effectif,code16,datefin,code3 } = req.body;
+    const { monnaie, effectif} = req.body;
     const {compte} = req.params;
     try {
         const rdm = await fetch("http://127.0.0.1:3334/data/mongodb/monnaie")
@@ -221,7 +282,7 @@ app.put("/shop/pay/:compte", async (req, res) => {
 
         const rdmp = await pool.query("UPDATE credit_compte SET effectif = effectif + "+effectif+" WHERE compte="+compte+" AND type_monnaie = '"+monnaie+"'")
 
-        const rhis = await pool.query("INSERT INTO transaction (compte, monnaie, effectif, prixUnite,prixtotal,code16,datefinvalidite,code3) VALUES ($1,$2,$3,$4,$5,$6,$7,$8) RETURNING *",[compte,monnaie, effectif,rdmj[indexm].montant,prixtotal,code16,datefin+"-01",code3])
+        const rhis = await pool.query("INSERT INTO transaction (compte, monnaie, effectif, prixUnite,prixtotal) VALUES ($1,$2,$3,$4,$5) RETURNING *",[compte,monnaie, effectif,rdmj[indexm].montant,prixtotal])
         res.status(200).json({success: true, message: "Transaction success"})
     }catch (error){
         res.status(500).json({success: false, message: "Transaction failed : "+error})
