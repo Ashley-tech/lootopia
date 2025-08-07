@@ -348,9 +348,9 @@ app.get("/inscription/:participant/:chasse",async (req,res) => {
     const {participant,chasse} = req.params
     try {
         const result = await pool.query("INSERT INTO participation (joueur,chasse) VALUES ($1,$2) RETURNING *",[participant,chasse]);
-        res.status(201).json({succes:true,message:"Inscription réussie"})
+        res.status(201).json({success:true,message:"Inscription réussie"})
     } catch (e) {
-        res.status(500).json({succes:false,message:"Inscription échouée : "+e})
+        res.status(500).json({success:false,message:"Inscription échouée : "+e})
     }
 })
 
@@ -433,7 +433,7 @@ app.get('/data/postgresql/:table', async (req, res) => {
   try {
     let reqSQL;
     if (table == "chasse") {
-      reqSQL ="SELECT ch.id,titre,description,organisateur,monde,datefin,nbreparticipantsmax,montant,delai,statut,nbclicks,nbvues,brand,url_banniere,latitude,longitude FROM chasse ch join compte co on (organisateur = co.id)";
+      reqSQL ="SELECT ch.id,titre,description,organisateur,monde,datefin,nbreparticipantsmax,montant,delai,statut,nbclicks,nbvues,datecreation,brand,url_banniere,latitude,longitude FROM chasse ch join compte co on (organisateur = co.id)";
       const result = await pool.query(reqSQL);
       const rows = result.rows;
 

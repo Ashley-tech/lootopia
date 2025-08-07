@@ -215,11 +215,11 @@
         const index0 = result0.findIndex(obj => obj.chasse.id == id && obj.joueur.id == result1[index1].id)
         if (rj[index].statut == "Actif"){
           if (index0 == -1 && rj[index].nbreparticipantsmax - nb.nombre != 0 && indexc != indexu){
-            if (rj[index].montant <0.5){
+            if (rj[index].montant < 0.5){
               document.getElementById("bj").innerHTML = "<button id='inscription' class='bigbutton'>S'inscrire</button>"
               document.getElementById("inscription").addEventListener("click", async () => {
                 var conf = confirm("Es-tu sûr de vouloir t'inscrire à cette chasse ?")
-                if (!conf) {
+                if (conf) {
                   console.log("inscription")
                   const response2 = await fetch("http://127.0.0.1:3334/inscription/"+result1[index1].id+"/"+id);
                   const result2 = await response2.json();
@@ -282,7 +282,12 @@
               })
             }
           } else {
-            document.getElementById("bj").innerHTML = "<button class='bigbutton'>Jouer</button>"
+            if (index0 != -1){
+              document.getElementById("bj").innerHTML = "<button class='bigbutton'>Jouer</button>"
+            }
+            if (indexc == indexu){
+              document.getElementById("bj").innerHTML += "<button class='bigbutton'>Initialiser</button><button class='bigbutton'>Modifier la chasse</button>"
+            }
           } 
         }
       }

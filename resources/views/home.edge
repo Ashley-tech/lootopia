@@ -21,35 +21,45 @@
           
       </div>
     </nav>
-    <div>
-        <img src="/lootopia.webp" width="170" height="170" alt="LOOTOPIA" />
-    </div>
-     <div class="float_div width_1_sur_2 no_display float_right scroll_y_auto_0" id="confirm_deconnect">
+    <section class="scroll_y_auto">
+      <div>
+          <img src="/lootopia.webp" width="170" height="170" alt="LOOTOPIA" />
+      </div>
+      <h1>Dashboard</h1>
       <table>
         <tbody>
-          <tr><td colspan="2">Veux-tu vraiment te déconnecter ?</td></tr>
-          <tr>
-            <td><button class="littlebutton" onclick="deconnecter()">Oui</button></td>
-            <td><button class="littlebutton" onclick="fermer('confirm_deconnect')">Non</button></td>
-          </tr>
+          <tr><th>Dernière chasse créée :</th><td id="derc"></td><td><button class="littlebutton">Voir tous les chasses</button></td></tr>
+          <tr><th>Dernière article achetée :</th><td id="deraa"></td></tr>
+          <tr><th>Dernière article vendue :</th><td id="derav"></td></tr>
         </tbody>
       </table>
-    </div>
-    <div class="float_div width_1_sur_2 no_display float_right scroll_y_auto_0" id="info_account">
-      <table>
-        <tbody>
-          <tr><th colspan="2">Informations</th></tr>
-          <tr><th>Nickname :</th><td id='nickname'></td></tr>
-          <tr><th>Login :</th><td id='login'></td></tr>
-          <tr><th>Password :</th><td id='password'></td></tr>
-          <tr><th>Telephone Number :</th><td id='password'></td></tr>
-          <tr>
-            <td><button class="littlebutton" onclick="location.href = 'account/modify'">Modifier</button></td>
-            <td><button class="littlebutton" onclick="fermer('info_account')">Fermer</button></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+      <div class="float_div width_1_sur_2 no_display float_right scroll_y_auto_0" id="confirm_deconnect">
+        <table>
+          <tbody>
+            <tr><td colspan="2">Veux-tu vraiment te déconnecter ?</td></tr>
+            <tr>
+              <td><button class="littlebutton" onclick="deconnecter()">Oui</button></td>
+              <td><button class="littlebutton" onclick="fermer('confirm_deconnect')">Non</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="float_div width_1_sur_2 no_display float_right scroll_y_auto_0" id="info_account">
+        <table>
+          <tbody>
+            <tr><th colspan="2">Informations</th></tr>
+            <tr><th>Nickname :</th><td id='nickname'></td></tr>
+            <tr><th>Login :</th><td id='login'></td></tr>
+            <tr><th>Password :</th><td id='password'></td></tr>
+            <tr><th>Telephone Number :</th><td id='password'></td></tr>
+            <tr>
+              <td><button class="littlebutton" onclick="location.href = 'account/modify'">Modifier</button></td>
+              <td><button class="littlebutton" onclick="fermer('info_account')">Fermer</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
     <footer>
       <div class="nav-right">
         <ul class="nav-list">
@@ -65,7 +75,19 @@
       console.log(username)
       var divs = ['confirm_deconnect',"info_account"]
 
+      async function chargement() {
+        const resp = await fetch("http://127.0.0.1:3334/data/postgresql/chasse")
+            const resu = await resp.json()
+        const resa = await fetch("http://127.0.0.1:3334/data/postgresql/article")
+        const resua = await resa.json()
+        const resav = await fetch("http://127.0.1:3334/data/postgresql/article_achete")
+        const resuav = await resav.json()
+        document.getElementById("derc").innerHTML = resu[resu.length - 1].titre + " (" + resu[resu.length - 1].datecreation.substring(0,10) + ")"
+        document.getElementById("deraa").innerHTML = resua[resua.length - 1].nom
+        document.getElementById("derav").innerHTML = resuav[resuav.length - 1].article.nom + " (" + resuav[resuav.length - 1].date_achat.substring(0,10) + " - "+resuav[resuav.length - 1].heure_achat.substring(0,8)+")"
+      }
 
+      chargement()
 
       if(username){
         userInfo.innerHTML = "<img src='/account.webp' onclick='ouvrir("+'"info_account"'+")' class='pointer' alt='Profil' width='30' height='30' /><span>"+username+'</span><button onclick="ouvrir('+"'confirm_deconnect'"+')" class="buttond">Déconnexion</button>'
