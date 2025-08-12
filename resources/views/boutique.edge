@@ -79,8 +79,10 @@ let cardElements = [];
       async function chargement() {
   const repon = await fetch("http://127.0.0.1:3334/data/postgresql/compte");
   const r = await repon.json();
-  const inr = r.findIndex(obj => obj.login == username);
-  const compteId = r[inr].id;
+  if (r.success){
+    const inr = r.findIndex(obj => obj.login == username);
+    const compteId = r[inr].id;
+  }
 
   const response = await fetch("http://127.0.0.1:3334/data/mongodb/monnaie");
   const res = await response.json();
