@@ -87,7 +87,7 @@ $comptes = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <button onclick="window.location.href='/controllers/delete_account.php?id=<?= urlencode($compte['id']) ?>'">
                                     Supprimer ce compte
                                 </button>
-                            <?php endif; ?>
+                            <?php else: echo "Supprimé"; endif;?>
                         </td>
                     </tr>
                 <?php endforeach; ?>
