@@ -66,7 +66,7 @@ $comptes = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($comptes as $compte): ?>
+                <?php foreach ($comptes as $compte): if (!$compte['is_deleted']):?>
                     <tr>
                         <td><?= htmlspecialchars($compte['id']) ?></td>
                         <td><?= htmlspecialchars($compte['nickname']) ?></td>
@@ -83,14 +83,12 @@ $comptes = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <?php endif; ?>
                         </td>
                         <td>
-                            <?php if (!$compte['is_deleted']): ?>
                                 <button onclick="window.location.href='/controllers/delete_account.php?id=<?= urlencode($compte['id']) ?>'">
                                     Supprimer ce compte
                                 </button>
-                            <?php else: echo "Supprimé"; endif;?>
                         </td>
                     </tr>
-                <?php endforeach; ?>
+                <?php endif; endforeach; ?>
             </tbody>
         </table>
     <?php endif; ?>
