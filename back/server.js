@@ -222,17 +222,22 @@ app.post("/signup",async (req,res) => {
 
         console.log(r.rows.length)
 
-        if (r.rows.length != 0) {
+        if (r.rows.length != 0 && r.rows[0].is_deleted == false) {
             return res.send({success: false,message :'Compte déjà existant'});
         }
 
         const saltRounds = 10;
         const hash = await bcrypt.hash(password, saltRounds);
 
-        const result = await pool.query(
-            'INSERT INTO compte (nickname,login,password,password_crypted,tel,is_partner) VALUES ($1, $2,$3,$4,$5,$6) RETURNING *',
-            [nickname,login,password,hash,tel,false]
-        );
+        let result;
+        if (r.rows.length == 0){
+          result = await pool.query(
+              'INSERT INTO compte (nickname,login,password,password_crypted,tel,is_partner) VALUES ($1, $2,$3,$4,$5,$6) RETURNING *',
+              [nickname,login,password,hash,tel,false]
+          );
+        }else {
+          result = await pool.query("UPDATE compte SET is_deleted = false, nickname = '"+nickname+"', password = '"+password+"', password_crypted='"+hash+"', tel='"+tel+"' WHERE id = "+r.rows[0].id+" WHERE login = '"+login+"' RETURNING *")
+        }
 
         const result0 = await pool.query(
             "SELECT id from compte where nickname='"+nickname+"'"
@@ -241,12 +246,14 @@ app.post("/signup",async (req,res) => {
         
         const r2 = await fetch ("http://127.0.0.1:3334/data/mongodb/monnaie")
         const ro2 = await r2.json()
+          if (r.rows.length == 0){
         ro2.forEach(async m => {
                 let result = await pool.query(
                     'INSERT INTO credit_compte (compte,type_monnaie) VALUES ($1, $2) RETURNING *',
                     [idc.id , m.nom]
                 );
           })
+              }
         res.status(200).send({success: true,result: result.rows[0]});
     } catch (err) {
         console.error(err);
@@ -310,6 +317,10 @@ app.post('/login', async (req, res) => {
 
     if (!estValide) {
       return res.status(401).send({success: false,message :'Mot de passe incorrect'});
+    }
+
+    if (result.rows[0].is_deleted == true) {
+      return res.status(401).send({success: false,message :'Compte supprimé'});
     }
 
     // Connexion réussie

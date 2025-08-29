@@ -24,7 +24,7 @@ try {
 }
 
 // Mise à jour du champ is_partner
-$sql = "DELETE FROM compte WHERE id = :id";
+$sql = "UPDATE compte SET is_deleted = true WHERE id = :id";
 $stmt = $pdo->prepare($sql);
 $stmt->execute(['id' => $compteId]);
 

@@ -6,7 +6,7 @@ CREATE table compte(
 	password_crypted VARCHAR(200) NOT NULL,
 	tel VARCHAR(25) DEFAULT NULL,
 	is_partner BOOLEAN NOT NULL,
-	brand VARCHAR(56) DEFAULT NULL
+	is_deleted BOOLEAN NOT NULL DEFAULT FALSE
 );
 
 CREATE table chasse(
