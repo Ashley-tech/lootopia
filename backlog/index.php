@@ -63,7 +63,6 @@ $comptes = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <th>Password Crypted</th>
                     <th>Téléphone</th>
                     <th>Partenaire ?</th>
-                    <th>Marque</th>
                 </tr>
             </thead>
             <tbody>
@@ -83,7 +82,6 @@ $comptes = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 </button>
                             <?php endif; ?>
                         </td>
-                        <td><?= $compte['brand'] ?></td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
