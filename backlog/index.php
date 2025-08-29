@@ -83,9 +83,11 @@ $comptes = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <?php endif; ?>
                         </td>
                         <td>
+                            <?php if (!$compte['is_deleted']): ?>
                                 <button onclick="window.location.href='/controllers/delete_account.php?id=<?= urlencode($compte['id']) ?>'">
                                     Supprimer ce compte
                                 </button>
+                            <?php endif; ?>
                         </td>
                     </tr>
                 <?php endforeach; ?>
