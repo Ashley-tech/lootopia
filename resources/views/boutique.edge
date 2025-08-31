@@ -163,8 +163,14 @@ let cardElements = [];
             alert("Erreur : " + result.error.message);
           } else if (result.paymentIntent.status === 'succeeded') {
             alert("✅ Paiement réussi !");
+            const repons = await fetch("http://127.0.0.1:3334/data/postgresql/compte");
+            const rps = await repons.json();
+            console.log(rps);
+            console.log(rps.success);
+              const indep = rps.findIndex(obj => obj.login == username);
+              const cid = rps[indep].id;
             // Tu peux envoyer l’achat au backend ici :
-            const responseP = await fetch("http://127.0.0.1:3334/shop/pay/"+compteId, {
+            const responseP = await fetch("http://127.0.0.1:3334/shop/pay/"+cid, {
               method: "PUT",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
