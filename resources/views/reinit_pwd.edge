@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>LOOTOPIA - Réinitialisation du mot de passe</title>
+  {{ style('style') }}
+</head>
+<body>
+    <nav>
+        <div class="nav-left">
+          <ul class="nav-list">
+            <li class="pointer" onclick="location.href = '/home'">Accueil</li>
+            <li class="pointer" onclick="location.href = '/player'">Joueur</li>
+            <li class="pointer" onclick="location.href = '/organisator'">Organisateur</li>
+            <li class="pointer" onclick="location.href = '/recompenses'">Récompenses disponibles</li>
+            <li class="pointer" onclick="location.href = '/marketplace'">Marketplace</li>
+            <li class="pointer" onclick="location.href = '/shop'">Boutique</li>
+          </ul>
+        </div>
+      </nav>
+      <section class="scroll_y_auto">
+        <img src="/lootopia.webp" width="170" height="170" alt="LOOTOPIA" />
+        <h1>Réinitialisation du mot de passe </h1>
+        <table>
+            <tbody>
+                <tr><th>Login :</th><td>{{mel}}</td></tr>
+                <tr>
+                    <th>Password* :</th>
+                    <td><input type="password" placeholder="Password" id="pwdi" />
+                        <button onclick="showPwd('pwdi')">Display password</button>
+                    </td>
+                    </tr>
+                    <tr>
+                    <th>Password (to reconfirm)* :</th>
+                    <td><input type="password" placeholder="Password" id="pwdf" />
+                        <button onclick="showPwd('pwdf')">Display password</button>
+                    </td>
+                    </tr>
+                    <tr><td colspan="2" class="no_display" id="chargement">Modification du mot de passe...</td></tr>
+                    <tr><td colspan="2" class="no_display rouge" id="erreur">Une erreur s'est produite</td></tr>
+                <tr><td colspan="2" class="no_display rouge" id="empty">Tous les champs sont obligatoires</td></tr>
+                <tr><td colspan="2" class="no_display rouge" id="different">Les 2 mots de passes sont différents</td></tr>
+                <tr><td colspan="2" class="no_display vert" id="success">Mot de passe modifié avec succès. Un email de confirmation vient d'être envoyé. Redirection vers l'accueil dans 5 secondes</td></tr>
+                <tr><td colspan="2"><button class="bigbutton" id="loginBtn">Valider</button></td></tr>
+            </tbody>
+        </table>
+  </section>
+    <footer>
+      <div class="nav-right">
+        <ul class="nav-list">
+          <li>© 2025 Ashley RAKOTOARISOA<br />Projet réalisé dans le cadre de Sup de Vinci</li>
+        </ul>
+    </div>
+  </footer>
+    <script type='module'>
+        import Cookie from 'https://cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.mjs'
+        window.showPwd = function(id) {
+            const mdp = document.getElementById(id);
+            mdp.type = mdp.type === "password" ? "text" : "password";
+        }
+          document.getElementById("loginBtn").addEventListener("click", async (e) => {
+            e.preventDefault(); // évite le rechargement de la page
+            document.getElementById("empty").style.display = "none";
+            document.getElementById("different").style.display = "none";
+            document.getElementById("erreur").style.display = "none";
+
+            if (document.getElementById("pwdi").value == "" || document.getElementById("pwdf").value == "") {
+                document.getElementById("empty").style.display = "table-cell";
+            }else if (document.getElementById("pwdi").value != document.getElementById("pwdf").value) {
+                document.getElementById("different").style.display = "table-cell";
+            }else {
+                document.getElementById("chargement").style.display = "table-cell";
+                const password = document.getElementById("pwdi").value;
+                const email = "{{mel}}";
+                try {
+                    const response = await fetch("http://127.0.0.1:3334/"+email+"/password/update", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({pwd:document.getElementById("pwdi").value}) 
+                    });
+                    const result = await response.json();
+                    const from = "no-reply@lootopia.com"
+                    const subject = "Mot de passe réinitialisé";
+                    const to = email;
+                    let text = "Salut,<br /><br /> Ton mot de passe a été réinitialisé<br /><br />Mot de passe : ";
+                    for (let i = 0; i < password.length; i++) {
+                        text += "*";
+                    }
+                    text +="<br /><br />Passes de bons moments.<br /><br />Lootopia";
+                    const resm = await fetch("http://127.0.0.1:3334/send-email", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({from,to,subject,text})
+                    });
+                    document.getElementById("chargement").style.display = "none";
+                    if (result.success) {
+                        document.getElementById("success").style.display = "table-cell";
+                        document.getElementById("loginBtn").disabled = true;
+                        Cookie.set("username",email)
+                        setTimeout(() => {
+                            window.location.href = '/home';
+                        }, 5000);
+                    } else {
+                        document.getElementById("erreur").style.display = "table-cell";
+                    }
+                }catch (error) {
+                    console.error("Erreur de connexion :", error);
+                    document.getElementById("chargement").style.display = "none";
+                    document.getElementById("erreur").style.display = "table-cell";
+                }
+            }
+          });
+    </script>
+</body>
+</html>

@@ -24,8 +24,8 @@
         <table>
             <tbody>
                 <tr><th>Email :</th><td><input type="text" placeholder="Email" id="mel" /></tr>
-                <tr><th>Password :</th><td><input type="password" placeholder="Password" id="pwd"/><button onclick="showPwd()">Display password</button></td></tr>
-                <tr><td colspan="2" class="no_display" id="incorrect">Les identifiants ne correspondent pas</td></tr>
+                <tr><th>Password :</th><td><input type="password" placeholder="Password" id="pwd"/><button onclick="showPwd()">Display password</button><br /><p class="pointer" onclick="location.href = '/login/forgot'">Forgotten passsword ?</p></td></tr>
+                <tr><td colspan="2" class="no_display rouge" id="incorrect">Les identifiants ne correspondent pas</td></tr>
                 <tr><td><button class="bigbutton" id="loginBtn">Login</button></td><td><button class="bigbutton" onclick="location.href = '/signup'">Sign up</button></td></tr>
                 <tr><td colSpan="2"><button style="width:51rem;" class="bigbutton" onclick="window.history.back()">Return to home</button></td></tr>
             </tbody>

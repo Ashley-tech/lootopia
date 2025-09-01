@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>LOOTOPIA - Mot de passe oublié ?</title>
+  {{ style('style') }}
+</head>
+<body>
+    <nav>
+        <div class="nav-left">
+          <ul class="nav-list">
+            <li class="pointer" onclick="location.href = '/home'">Accueil</li>
+            <li class="pointer" onclick="location.href = '/player'">Joueur</li>
+            <li class="pointer" onclick="location.href = '/organisator'">Organisateur</li>
+            <li class="pointer" onclick="location.href = '/recompenses'">Récompenses disponibles</li>
+            <li class="pointer" onclick="location.href = '/marketplace'">Marketplace</li>
+            <li class="pointer" onclick="location.href = '/shop'">Boutique</li>
+          </ul>
+        </div>
+      </nav>
+      <section class="scroll_y_auto">
+        <img src="/lootopia.webp" width="170" height="170" alt="LOOTOPIA" />
+        <h1>Forgotten password : Please enter your email adress </h1>
+        <table>
+            <tbody>
+                <tr><th>Email :</th><td><input type="text" placeholder="Email" id="mel" /></tr>
+                    <tr><td colspan="2" class="no_display" id="chargement">Reconnaissance de l'adresse email saisi...</td></tr>
+                <tr><td colspan="2" class="no_display rouge" id="incorrect"></td></tr>
+                <tr><td colspan="2" class="no_display rouge" id="empty">Email empty.</td></tr>
+                <tr><td colspan="2" class="no_display vert" id="correct">Email recognized. Your received an email with link to reset your password.</td></tr>
+                <tr><td><button class="bigbutton" id="loginBtn">Validate</button></td><td><button class="bigbutton" onclick="window.history.back()">Return to connection form</button></td></tr>
+            </tbody>
+        </table>
+  </section>
+    <footer>
+      <div class="nav-right">
+        <ul class="nav-list">
+          <li>© 2025 Ashley RAKOTOARISOA<br />Projet réalisé dans le cadre de Sup de Vinci</li>
+        </ul>
+    </div>
+  </footer>
+    <script type='module'>
+          document.getElementById("loginBtn").addEventListener("click", async (e) => {
+            e.preventDefault(); // évite le rechargement de la page
+            document.getElementById("empty").style.display = "none";
+            document.getElementById("incorrect").style.display = "none";
+            document.getElementById("correct").style.display = "none";
+
+            if (document.getElementById("mel").value.trim() == "") {
+              document.getElementById("empty").style.display = "table-cell";
+            }else {
+                document.getElementById("chargement").style.display = "table-cell";
+                const login = document.getElementById("mel").value;
+
+                try {
+                const response = await fetch("http://127.0.0.1:3334/email/search", {
+                    method: "POST",
+                    headers: {
+                    "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ login })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    const from = "no-reply@lootopia.com"
+                    const subject = "Réinitialisation de mot de passe";
+                    const to = login;
+                    let text = "Salut,<br /><br /> Voici ce <a href='http://127.0.0.1:3333/pwd?mel="+login+"'>lien</a> pour modifier ton mot de passe<br /><br />Bon courage.<br /><br />Lootopia";
+                const response2 = await fetch("http://127.0.0.1:3334/send-email", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({ from,to,subject,text})
+                        });
+                        document.getElementById("chargement").style.display = "none";
+                    document.getElementById("correct").style.display = "table-cell";
+                } else {
+                    document.getElementById("chargement").style.display = "none";
+                    document.getElementById("incorrect").style.display = "table-cell";
+                    document.getElementById("incorrect").textContent = "L'email n'est pas reconnu dans la base de données. Veuillez vous inscrire.";
+                }
+                } catch (error) {
+                    console.error("Erreur de connexion :", error);
+                    document.getElementById("chargement").style.display = "none";
+                    document.getElementById("incorrect").style.display = "table-cell";
+                    document.getElementById("incorrect").textContent = "Erreur réseau.";
+                }
+            }
+          });
+    </script>
+</body>
+</html>

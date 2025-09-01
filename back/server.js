@@ -210,6 +210,45 @@ app.put("/marketplace/buy/:compte/:article", async (req,res) => {
     }
 })
 
+app.post("/email/search",async (req,res) => {
+    const { login } = req.body;
+
+    try {
+        // Récupérer l'utilisateur par email
+        const r = await pool.query(
+            'SELECT * FROM compte WHERE login = $1',
+            [login]
+        );
+
+        if (r.rows.length == 0 || r.rows[0].is_deleted == true) {
+            return res.status(404).send({success: false,message :'Compte non trouvé'});
+        }
+        res.status(200).send({success: true,message: 'Compte trouvé'});
+    } catch (err) {
+        console.error(err);
+        res.status(500).send({success: false,message :err.message});
+    }
+})
+
+app.post("/:email/password/update",async (req,res) => {
+    const { pwd } = req.body;
+    const { email } = req.params;
+
+    try {
+        // Récupérer l'utilisateur par email
+        const saltRounds = 10;
+        const hash = await bcrypt.hash(pwd, saltRounds);
+        const r = await pool.query(
+            'UPDATE compte SET password = $1, password_crypted=$2 WHERE login = $3',
+            [pwd,hash,email]
+        );
+        res.status(200).send({success: true,message :"Mot de passe modifié avec succès"});
+    } catch (err) {
+        console.error(err);
+        res.status(500).send({success: false,message :err.message});
+    }
+})
+
 app.post("/signup",async (req,res) => {
     const { nickname,login,password,tel } = req.body;
 
