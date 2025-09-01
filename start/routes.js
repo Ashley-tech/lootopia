@@ -53,5 +53,6 @@ Route.get('/player/:chasse', async ({ params,view }) => {
   return view.render('play_chasse', {
     id,
     googleMapsApiKey: Env.get('MAP_API_KEY'),
+    publicKeyStripe: Env.get('STRIPE_PUBLISHABLE_KEY'),
   })
 })

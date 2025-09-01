@@ -85,6 +85,7 @@
     </script>
     <script type="module">
         import Cookie from 'https://cdn.jsdelivr.net/npm/js-cookie@3.0.1/dist/js.cookie.mjs'
+        const publicKeyStripe = "{{ publicKeyStripe }}"
       
 
       const username = Cookie.get('username')
@@ -232,9 +233,9 @@
                 }
               })
             } else {
-              document.getElementById("bj").innerHTML = "<br /><br /><div id='card-element' cl style='margin-bottom: 10px;'></div><div id='card-errors' class='red' style='margin-bottom: 10px;'></div><button id='payer' class='bigbutton'>Payer</button>"
+              document.getElementById("bj").innerHTML = "<br /><br /><div id='card-element' cl style='margin-bottom: 10px;background-color: white;color:black;'></div><div id='card-errors' class='red' style='margin-bottom: 10px;'></div><button id='payer' class='bigbutton'>Payer</button>"
               
-          const stripe = Stripe('pk_test_51RbljMGKnjvSr5TJYgsFywCZ3vGQhXHMXEKBdHfyuqUlde4UwN30c64XJ0B8opgNKotlhqYideBL27jMe9Tx5DJU00ELFT02BL'); // clé publique
+          const stripe = Stripe(publicKeyStripe); // clé publique
       const elements = stripe.elements();
       const cardElement = elements.create("card");
               cardElement.mount("#card-element");
