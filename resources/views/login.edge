@@ -76,6 +76,11 @@
               document.getElementById("incorrect").textContent = "Erreur réseau.";
             }
           });
+          document.addEventListener("keydown", (event) => {
+            if (event.key === "Enter") {
+              document.getElementById("loginBtn").click(); // simule un clic
+            }
+          });
     </script>
 </body>
 </html>

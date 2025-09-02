@@ -209,6 +209,12 @@
         }
       })
 
+      document.addEventListener("keydown", (event) => {
+                if (event.key === "Enter") {
+                    document.getElementById("sign").click(); // simule un clic
+                }
+            });
+
       function checkRE(regex, str) {
         return regex.test(str);
       }

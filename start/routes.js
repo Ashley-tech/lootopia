@@ -25,7 +25,6 @@ Route.on('/login').render("login")
 Route.on('/signup').render("signup")
 Route.on('/player').render("player")
 Route.on('/organisator').render("organisator")
-Route.on('/account').render("account")
 Route.on('/login/forgot').render("forgot")
 Route.get("/pwd", async ({request,view}) => {
   const mel = request.input("mel")

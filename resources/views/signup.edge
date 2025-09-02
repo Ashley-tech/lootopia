@@ -176,6 +176,12 @@
               }
             }
         })
+
+        document.addEventListener("keydown", (event) => {
+            if (event.key === "Enter") {
+              document.getElementById("sign").click(); // simule un clic
+            }
+          });
     </script>
 </body>
 </html>
