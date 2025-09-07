@@ -51,7 +51,7 @@
             <tr><th>Nickname :</th><td id='nickname'></td></tr>
             <tr><th>Login :</th><td id='login'></td></tr>
             <tr><th>Password :</th><td id='password'></td></tr>
-            <tr><th>Telephone Number :</th><td id='password'></td></tr>
+            <tr><th>Telephone Number :</th><td id='tel'></td></tr>
             <tr>
               <td><button class="littlebutton" onclick="location.href = 'account/modify'">Modifier</button></td>
               <td><button class="littlebutton" onclick="fermer('info_account')">Fermer</button></td>
@@ -109,6 +109,7 @@
             document.getElementById("nickname").innerHTML = resu[inu].nickname
             document.getElementById("login").innerHTML = resu[inu].login
             document.getElementById("tel").innerHTML = resu[inu].tel
+            console.log(resu[inu].password)
             let p = ""
             for (let i = 0 ; i < resu[inu].password.length ; i++){
               p += "*"
